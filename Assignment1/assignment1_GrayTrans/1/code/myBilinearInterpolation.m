@@ -1,5 +1,4 @@
-function out_image = myBilinearInterpolation(filename, out_filename)
-image = imread(filename);
+function out_image = myBilinearInterpolation(image)
 
 M = size(image, 1);
 N = size(image, 2);
@@ -41,14 +40,8 @@ for i = 1:final_M
                 ((prev_x_distance + next_x_distance)* ...
                 (prev_y_distance + next_y_distance));
         end
-        
-        %display([next_x, prev_x, next_y, prev_y; ...
-        %    next_x_distance, prev_x_distance, next_y_distance, prev_y_distance; ...
-        %    image_nx_ny, image_nx_py, image_px_ny, image_px_py; ...
-        %    out_image(i, j),out_image(i, j),out_image(i, j),out_image(i, j)]);
     end
 end
 
-%imshow(uint8(out_image));
-imwrite(uint8(out_image), out_filename);
+out_image = uint8(out_image);
 end

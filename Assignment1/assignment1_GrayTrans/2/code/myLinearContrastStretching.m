@@ -1,5 +1,5 @@
-function out_image = myLinearContrastStretching(filename, out_filename)
-image = imread(filename);
+function out_image = myLinearContrastStretching(image)
+
 minimum = double(min(min(image)));
 maximum = double(max(max(image)));
 out_image = image;
@@ -14,6 +14,5 @@ if (minimum < maximum)
     end
 end
 
-%imshow(uint8(out_image));
-imwrite(uint8(out_image), out_filename);
+out_image = uint8(out_image);
 end

@@ -1,5 +1,4 @@
-function out_image = myNearestNeighborInterpolation(filename, out_filename)
-image = imread(filename);
+function out_image = myNearestNeighborInterpolation(image)
 
 M = size(image, 1);
 N = size(image, 2);
@@ -44,6 +43,5 @@ for i = 1:final_M
     end
 end
 
-%imshow(uint8(out_image));
-imwrite(uint8(out_image), out_filename);
+out_image = uint8(out_image);
 end

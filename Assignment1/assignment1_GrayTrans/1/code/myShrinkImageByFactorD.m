@@ -1,19 +1,19 @@
-function out_image = myShrinkImageByFactorD(filename, out_filename, d)
-image = imread(filename);
-d = int32(d);
+%% MyShrinkImageByFactorD
 
-out_image = zeros(idivide(size(image,1),d), idivide(size(image,2),d));
-for i = 1:size(image,1)
-    for j = 1:size(image,2)
-        if (and(eq(mod(i,d),0) , eq(mod(j,d), 0)))
-            final_i = idivide(i,d);
-            final_j = idivide(j,d);
+function out_image = myShrinkImageByFactorD(image, factor)
+factor = int32(factor);
+[rows, cols] = size(image);
+out_image = zeros(idivide(rows,factor), idivide(cols,factor));
+
+for i = 1:rows
+    for j = 1:cols
+        if (and(eq(mod(i,factor),0) , eq(mod(j,factor), 0)))
+            final_i = idivide(i,factor);
+            final_j = idivide(j,factor);
             out_image(final_i, final_j) = image(i,j);
-            %display([out_image(final_i, final_j), image(i,j)])
         end
     end
 end
 
-%imshow(uint8(out_image));
-imwrite(uint8(out_image), out_filename);
+out_image = uint8(out_image);
 end
