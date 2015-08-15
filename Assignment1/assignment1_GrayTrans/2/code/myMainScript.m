@@ -168,7 +168,18 @@ end
 displayColoredImage(canyon_medium_ahe, 'Canyon Medium AHE');
 
 %%
-% *Canyon AHE with Small Window Size*
+% *Canyon AHE with medium Window Size*
+tic;
+canyon_small_ahe = processColoredImage(canyon, @(image) myAHEforLowWindowSize(image));
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/canyon_small_ahe.mat', 'canyon_small_ahe');
+end
+displayColoredImage(canyon_small_ahe, 'Canyon Small AHE');
+
+
+%%
+% *Canyon AHE with Large Window Size*
 tic;
 canyon_large_ahe = processColoredImage(canyon, @(image) myAHEforLargeWindowSize(image));
 elapsedTime = toc;
@@ -177,6 +188,66 @@ if elapsedTime > 300
 end
 displayColoredImage(canyon_large_ahe, 'Canyon Large AHE');
 
-%tem_ahe = myAHE(tem, 20);
-%tem_clahe = myCLAHE(tem, 20, 0.5);
+%% Contrast-Limited Adaptive Histogram Equalization (CLAHE)
+
+%%
+% *Barbara CLAHE with 0.5 Threshold*
+tic;
+barbara_clahe_high = myCLAHEWithMediumWindowSize(barbara);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/barbara_clahe_high.mat', 'barbara_clahe_high');
+end
+displayGrayScale(barbara_clahe_high, 'Barbara Clahe with threshold 0.5');
+
+%%
+% *Barbara CLAHE with 0.25 Threshold*
+tic;
+barbara_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(barbara);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/barbara_clahe_low.mat', 'barbara_clahe_low');
+end
+displayGrayScale(barbara_clahe_low, 'Barbara Clahe with threshold 0.25');
+
+%%
+% *TEM CLAHE with 0.5 Threshold*
+tic;
+tem_clahe_high = myCLAHEWithMediumWindowSize(tem);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/tem_clahe_high.mat', 'tem_clahe_high');
+end
+displayGrayScale(tem_clahe_high, 'TEM CLAHE with threshold 0.5');
+
+%%
+% *TEM CLAHE with 0.25 Threshold*
+tic;
+tem_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(tem);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/tem_clahe_low.mat', 'tem_clahe_low');
+end
+displayGrayScale(tem_clahe_low, 'TEM CLAHE with threshold 0.25');
+
+%%
+% *Canyon CLAHE with 0.5 Threshold*
+tic;
+canyon_clahe_high = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSize(img));
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/canyon_clahe_high.mat', 'tem_clahe_high');
+end
+displayGrayScale(canyon_clahe_high, 'Canyon CLAHE with threshold 0.5');
+
+%%
+% *Canyon CLAHE with 0.25 Threshold*
+tic;
+canyon_clahe_low = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSizeAndHalfThreshold(img));
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/canyon_clahe_low.mat', 'tem_clahe_low');
+end
+displayGrayScale(canyon_clahe_low, 'Canyon CLAHE with threshold 0.25');
+
 
