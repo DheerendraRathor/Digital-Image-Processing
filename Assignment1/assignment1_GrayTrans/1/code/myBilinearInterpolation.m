@@ -1,4 +1,6 @@
 function out_image = myBilinearInterpolation(image)
+% myBilinearInterpolation resize image by a factor of 3*2 using bilinear
+% interpolation
 
 M = size(image, 1);
 N = size(image, 2);
