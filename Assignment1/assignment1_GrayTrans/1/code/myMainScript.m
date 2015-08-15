@@ -13,7 +13,7 @@
 
 myNumOfColors= 256;
 myColorScale = [ [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' ];
-displayGrayScale = @(image, title) displayImageWithColorBar(image, title, myColorScale, jet);
+displayGrayScale = @(image, title) displayImageWithColorBar(image, title, myColorScale, gray);
 
 %% Defining and Reading test input files
 
