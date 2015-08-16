@@ -244,7 +244,7 @@ elapsedTime = toc;
 if elapsedTime > 300
     save('../images/canyon_clahe_high.mat', 'tem_clahe_high');
 end
-displayGrayScale(canyon_clahe_high, 'Canyon CLAHE with threshold 0.05');
+displayColoredImage(canyon_clahe_high, 'Canyon CLAHE with threshold 0.05');
 
 %%
 % *Canyon CLAHE with 0.025 Threshold*
@@ -254,6 +254,6 @@ elapsedTime = toc;
 if elapsedTime > 300
     save('../images/canyon_clahe_low.mat', 'tem_clahe_low');
 end
-displayGrayScale(canyon_clahe_low, 'Canyon CLAHE with threshold 0.025');
+displayColoredImage(canyon_clahe_low, 'Canyon CLAHE with threshold 0.025');
 
 
