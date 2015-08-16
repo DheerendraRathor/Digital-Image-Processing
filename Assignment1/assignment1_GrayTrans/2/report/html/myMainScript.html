@@ -69,12 +69,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
   </style></head><body><div class="content"><h1>Question 2</h1><!--introduction--><p>Objectives:</p><div><ul><li>Linear Contrast Stretching</li><li>Histogram Equalization (HE)</li><li>Adaptive Histogram Equalization (AHE)</li><li>Contrast-Limited Adaptive Histogram Equalization (CLAHE)</li></ul></div><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Colormap and Helper Functions</a></li><li><a href="#4">Input files</a></li><li><a href="#8">Linear Contrast Stretching</a></li><li><a href="#12">Histogram Equilization (HE)</a></li><li><a href="#16">Adaptive Histogram Equalization (AHE)</a></li><li><a href="#26">Contrast-Limited Adaptive Histogram Equalization (CLAHE)</a></li></ul></div><h2>Colormap and Helper Functions<a name="1"></a></h2><pre class="codeinput">myNumOfColors= 256;
 myColorScale = [ [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' ];
 displayGrayScale = @(image, title) displayImageWithColorBar(image, title, myColorScale);
-displayColoredImage = @(image, title) displayImageWithColorBar(image, title, myColorScale);
+displayColoredImage = @(image, title) displayImageWithColorBar(image, title, getColormapForRGBImage(image));
 </pre><p><b>Lambda functions for AHE with low, medium and High window size</b></p><pre class="codeinput">myAHEforLowWindowSize = @(image) myAHE(image, 2);
 myAHEforMediumWindowSize = @(image) myAHE(image, 20);
 myAHEforLargeWindowSize = @(image) myAHE(image, 100);
-</pre><p><b>Lambda functions for CLAHE with</b></p><pre class="codeinput">myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 20, 0.5);
-myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 20, 0.25);
+</pre><p><b>Lambda functions for CLAHE with</b></p><pre class="codeinput">myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 100, 0.05);
+myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 100, 0.025);
 </pre><h2>Input files<a name="4"></a></h2><pre class="codeinput">barbara_filename = <span class="string">'../data/barbara.png'</span>;
 canyon_filename = <span class="string">'../data/canyon.png'</span>;
 tem_filename = <span class="string">'../data/TEM.png'</span>;
@@ -82,39 +82,44 @@ tem_filename = <span class="string">'../data/TEM.png'</span>;
 barbara = imread(barbara_filename);
 canyon = imread(canyon_filename);
 tem = imread(tem_filename);
-</pre><p>Original Barbara</p><pre class="codeinput">displayGrayScale(barbara, <span class="string">'Original Barbara'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <p>Original Canyon</p><pre class="codeinput">displayColoredImage(canyon, <span class="string">'Original Canyon'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <p>Original TEM</p><pre class="codeinput">displayGrayScale(tem, <span class="string">'Original TEM'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2>Linear Contrast Stretching<a name="8"></a></h2><p><b>Barbara Linear Contrast Stretched</b></p><pre class="codeinput">tic;
+</pre><p><b>Original Barbara</b></p><pre class="codeinput">displayGrayScale(barbara, <span class="string">'Original Barbara'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <p><b>Original Canyon</b></p><pre class="codeinput">displayColoredImage(canyon, <span class="string">'Original Canyon'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <p><b>Original TEM</b></p><pre class="codeinput">displayGrayScale(tem, <span class="string">'Original TEM'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2>Linear Contrast Stretching<a name="8"></a></h2><p><b>Psuedocode:</b></p><pre class="language-matlab">min <span class="string">:=</span> <span class="string">min(image)</span>
+max <span class="string">:=</span> <span class="string">max(image)</span>
+</pre><pre class="language-matlab"><span class="keyword">if</span> (min is not equal to max):
+    <span class="keyword">for</span> every point <span class="string">p</span> <span class="string">in</span> <span class="string">image:</span>
+        I(p) := 255 * ((I(p) - min) / (max - min))
+</pre><p><b>Barbara Linear Contrast Stretched</b></p><pre class="codeinput">tic;
 barbara_linear = myLinearContrastStretching(barbara);
 toc;
 displayGrayScale(barbara_linear, <span class="string">'Barbara Linear Contrast Stretched'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.020420 seconds.
+</pre><pre class="codeoutput">Elapsed time is 0.017695 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <p><b>TEM Linear Contrast Stretched</b></p><pre class="codeinput">tic;
 tem_linear = myLinearContrastStretching(tem);
 toc;
 displayGrayScale(tem_linear, <span class="string">'TEM Linear Contrast Stretched'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.026270 seconds.
+</pre><pre class="codeoutput">Elapsed time is 0.023878 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <p><b>Canyon Linear Contrast Stretched</b></p><pre class="codeinput">tic;
 canyon_linear = processColoredImage(canyon, @myLinearContrastStretching);
 toc;
 displayColoredImage(canyon_linear, <span class="string">'Canyon Linear Contrast Stretched'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.058446 seconds.
+</pre><pre class="codeoutput">Elapsed time is 0.044824 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <h2>Histogram Equilization (HE)<a name="12"></a></h2><p><b>Barbara HE</b></p><pre class="codeinput">tic;
 barbara_he = myHE(barbara);
 toc;
 displayGrayScale(barbara_he, <span class="string">'Barbara HE'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.344276 seconds.
+</pre><pre class="codeoutput">Elapsed time is 0.010235 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_07.png" alt=""> <p><b>TEM He</b></p><pre class="codeinput">tic;
 tem_he = myHE(tem);
 toc;
 displayGrayScale(tem_he, <span class="string">'TEM HE'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.022305 seconds.
+</pre><pre class="codeoutput">Elapsed time is 0.018319 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_08.png" alt=""> <p><b>Canyon HE</b></p><pre class="codeinput">tic;
 canyon_he = processColoredImage(canyon, @myHE);
 toc;
 displayColoredImage(canyon_he, <span class="string">'Canyon HE'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.033271 seconds.
+</pre><pre class="codeoutput">Elapsed time is 0.031594 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_09.png" alt=""> <h2>Adaptive Histogram Equalization (AHE)<a name="16"></a></h2><p><b>Barbara AHE With Medium Window Size</b></p><pre class="codeinput">tic;
 barbara_medium_ahe = myAHEforMediumWindowSize(barbara);
 elapsedTime = toc;
@@ -178,48 +183,48 @@ elapsedTime = toc;
     save(<span class="string">'../images/canyon_large_ahe.mat'</span>, <span class="string">'canyon_large_ahe'</span>);
 <span class="keyword">end</span>
 displayColoredImage(canyon_large_ahe, <span class="string">'Canyon Large AHE'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_18.png" alt=""> <h2>Contrast-Limited Adaptive Histogram Equalization (CLAHE)<a name="26"></a></h2><p><b>Barbara CLAHE with 0.5 Threshold</b></p><pre class="codeinput">tic;
+</pre><img vspace="5" hspace="5" src="myMainScript_18.png" alt=""> <h2>Contrast-Limited Adaptive Histogram Equalization (CLAHE)<a name="26"></a></h2><p><b>Barbara CLAHE with 0.05 Threshold</b></p><pre class="codeinput">tic;
 barbara_clahe_high = myCLAHEWithMediumWindowSize(barbara);
 elapsedTime = toc;
 <span class="keyword">if</span> elapsedTime &gt; 300
     save(<span class="string">'../images/barbara_clahe_high.mat'</span>, <span class="string">'barbara_clahe_high'</span>);
 <span class="keyword">end</span>
-displayGrayScale(barbara_clahe_high, <span class="string">'Barbara Clahe with threshold 0.5'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_19.png" alt=""> <p><b>Barbara CLAHE with 0.25 Threshold</b></p><pre class="codeinput">tic;
+displayGrayScale(barbara_clahe_high, <span class="string">'Barbara Clahe with threshold 0.05'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_19.png" alt=""> <p><b>Barbara CLAHE with 0.025 Threshold</b></p><pre class="codeinput">tic;
 barbara_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(barbara);
 elapsedTime = toc;
 <span class="keyword">if</span> elapsedTime &gt; 300
     save(<span class="string">'../images/barbara_clahe_low.mat'</span>, <span class="string">'barbara_clahe_low'</span>);
 <span class="keyword">end</span>
-displayGrayScale(barbara_clahe_low, <span class="string">'Barbara Clahe with threshold 0.25'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_20.png" alt=""> <p><b>TEM CLAHE with 0.5 Threshold</b></p><pre class="codeinput">tic;
+displayGrayScale(barbara_clahe_low, <span class="string">'Barbara Clahe with threshold 0.025'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_20.png" alt=""> <p><b>TEM CLAHE with 0.05 Threshold</b></p><pre class="codeinput">tic;
 tem_clahe_high = myCLAHEWithMediumWindowSize(tem);
 elapsedTime = toc;
 <span class="keyword">if</span> elapsedTime &gt; 300
     save(<span class="string">'../images/tem_clahe_high.mat'</span>, <span class="string">'tem_clahe_high'</span>);
 <span class="keyword">end</span>
-displayGrayScale(tem_clahe_high, <span class="string">'TEM CLAHE with threshold 0.5'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_21.png" alt=""> <p><b>TEM CLAHE with 0.25 Threshold</b></p><pre class="codeinput">tic;
+displayGrayScale(tem_clahe_high, <span class="string">'TEM CLAHE with threshold 0.05'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_21.png" alt=""> <p><b>TEM CLAHE with 0.025 Threshold</b></p><pre class="codeinput">tic;
 tem_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(tem);
 elapsedTime = toc;
 <span class="keyword">if</span> elapsedTime &gt; 300
     save(<span class="string">'../images/tem_clahe_low.mat'</span>, <span class="string">'tem_clahe_low'</span>);
 <span class="keyword">end</span>
-displayGrayScale(tem_clahe_low, <span class="string">'TEM CLAHE with threshold 0.25'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_22.png" alt=""> <p><b>Canyon CLAHE with 0.5 Threshold</b></p><pre class="codeinput">tic;
+displayGrayScale(tem_clahe_low, <span class="string">'TEM CLAHE with threshold 0.025'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_22.png" alt=""> <p><b>Canyon CLAHE with 0.05 Threshold</b></p><pre class="codeinput">tic;
 canyon_clahe_high = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSize(img));
 elapsedTime = toc;
 <span class="keyword">if</span> elapsedTime &gt; 300
     save(<span class="string">'../images/canyon_clahe_high.mat'</span>, <span class="string">'tem_clahe_high'</span>);
 <span class="keyword">end</span>
-displayGrayScale(canyon_clahe_high, <span class="string">'Canyon CLAHE with threshold 0.5'</span>);
-</pre><img vspace="5" hspace="5" src="myMainScript_23.png" alt=""> <p><b>Canyon CLAHE with 0.25 Threshold</b></p><pre class="codeinput">tic;
+displayGrayScale(canyon_clahe_high, <span class="string">'Canyon CLAHE with threshold 0.05'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_23.png" alt=""> <p><b>Canyon CLAHE with 0.025 Threshold</b></p><pre class="codeinput">tic;
 canyon_clahe_low = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSizeAndHalfThreshold(img));
 elapsedTime = toc;
 <span class="keyword">if</span> elapsedTime &gt; 300
     save(<span class="string">'../images/canyon_clahe_low.mat'</span>, <span class="string">'tem_clahe_low'</span>);
 <span class="keyword">end</span>
-displayGrayScale(canyon_clahe_low, <span class="string">'Canyon CLAHE with threshold 0.25'</span>);
+displayGrayScale(canyon_clahe_low, <span class="string">'Canyon CLAHE with threshold 0.025'</span>);
 </pre><img vspace="5" hspace="5" src="myMainScript_24.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Question 2
@@ -236,8 +241,7 @@ displayGrayScale(canyon_clahe_low, <span class="string">'Canyon CLAHE with thres
 myNumOfColors= 256;
 myColorScale = [ [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' ];
 displayGrayScale = @(image, title) displayImageWithColorBar(image, title, myColorScale);
-displayColoredImage = @(image, title) displayImageWithColorBar(image, title, myColorScale);
-
+displayColoredImage = @(image, title) displayImageWithColorBar(image, title, getColormapForRGBImage(image));
 %%
 % *Lambda functions for AHE with low, medium and High window size*
 myAHEforLowWindowSize = @(image) myAHE(image, 2);
@@ -246,8 +250,8 @@ myAHEforLargeWindowSize = @(image) myAHE(image, 100);
 
 %%
 % *Lambda functions for CLAHE with*
-myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 20, 0.5);
-myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 20, 0.25);
+myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 100, 0.05);
+myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 100, 0.025);
 
 %% Input files
 barbara_filename = '../data/barbara.png';
@@ -259,20 +263,27 @@ canyon = imread(canyon_filename);
 tem = imread(tem_filename);
 
 %%
-% Original Barbara
+% *Original Barbara*
 displayGrayScale(barbara, 'Original Barbara');
 
 %% 
-% Original Canyon
+% *Original Canyon*
 displayColoredImage(canyon, 'Original Canyon');
 
 %%
-% Original TEM
+% *Original TEM*
 displayGrayScale(tem, 'Original TEM');
 
 %% Linear Contrast Stretching
 % 
-%   
+% *Psuedocode:*
+%
+%   min := min(image)
+%   max := max(image)
+%
+%   if (min is not equal to max):
+%       for every point p in image:
+%           I(p) := 255 * ((I(p) - min) / (max - min))
 %
 
 %%
@@ -415,64 +426,64 @@ displayColoredImage(canyon_large_ahe, 'Canyon Large AHE');
 %% Contrast-Limited Adaptive Histogram Equalization (CLAHE)
 
 %%
-% *Barbara CLAHE with 0.5 Threshold*
+% *Barbara CLAHE with 0.05 Threshold*
 tic;
 barbara_clahe_high = myCLAHEWithMediumWindowSize(barbara);
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/barbara_clahe_high.mat', 'barbara_clahe_high');
 end
-displayGrayScale(barbara_clahe_high, 'Barbara Clahe with threshold 0.5');
+displayGrayScale(barbara_clahe_high, 'Barbara Clahe with threshold 0.05');
 
 %%
-% *Barbara CLAHE with 0.25 Threshold*
+% *Barbara CLAHE with 0.025 Threshold*
 tic;
 barbara_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(barbara);
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/barbara_clahe_low.mat', 'barbara_clahe_low');
 end
-displayGrayScale(barbara_clahe_low, 'Barbara Clahe with threshold 0.25');
+displayGrayScale(barbara_clahe_low, 'Barbara Clahe with threshold 0.025');
 
 %%
-% *TEM CLAHE with 0.5 Threshold*
+% *TEM CLAHE with 0.05 Threshold*
 tic;
 tem_clahe_high = myCLAHEWithMediumWindowSize(tem);
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/tem_clahe_high.mat', 'tem_clahe_high');
 end
-displayGrayScale(tem_clahe_high, 'TEM CLAHE with threshold 0.5');
+displayGrayScale(tem_clahe_high, 'TEM CLAHE with threshold 0.05');
 
 %%
-% *TEM CLAHE with 0.25 Threshold*
+% *TEM CLAHE with 0.025 Threshold*
 tic;
 tem_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(tem);
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/tem_clahe_low.mat', 'tem_clahe_low');
 end
-displayGrayScale(tem_clahe_low, 'TEM CLAHE with threshold 0.25');
+displayGrayScale(tem_clahe_low, 'TEM CLAHE with threshold 0.025');
 
 %%
-% *Canyon CLAHE with 0.5 Threshold*
+% *Canyon CLAHE with 0.05 Threshold*
 tic;
 canyon_clahe_high = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSize(img));
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/canyon_clahe_high.mat', 'tem_clahe_high');
 end
-displayGrayScale(canyon_clahe_high, 'Canyon CLAHE with threshold 0.5');
+displayGrayScale(canyon_clahe_high, 'Canyon CLAHE with threshold 0.05');
 
 %%
-% *Canyon CLAHE with 0.25 Threshold*
+% *Canyon CLAHE with 0.025 Threshold*
 tic;
 canyon_clahe_low = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSizeAndHalfThreshold(img));
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/canyon_clahe_low.mat', 'tem_clahe_low');
 end
-displayGrayScale(canyon_clahe_low, 'Canyon CLAHE with threshold 0.25');
+displayGrayScale(canyon_clahe_low, 'Canyon CLAHE with threshold 0.025');
 
 
 

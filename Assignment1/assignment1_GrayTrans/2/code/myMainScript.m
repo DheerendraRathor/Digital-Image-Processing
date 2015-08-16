@@ -21,8 +21,8 @@ myAHEforLargeWindowSize = @(image) myAHE(image, 100);
 
 %%
 % *Lambda functions for CLAHE with*
-myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 20, 0.05);
-myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 20, 0.025);
+myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 100, 0.05);
+myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 100, 0.025);
 
 %% Input files
 barbara_filename = '../data/barbara.png';
