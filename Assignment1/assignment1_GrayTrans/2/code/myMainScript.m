@@ -22,8 +22,8 @@ myAHEforLargeWindowSize = @(image) myAHE(image, 100);
 
 %%
 % *Lambda functions for CLAHE with*
-myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 20, 0.5);
-myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 20, 0.25);
+myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 20, 0.05);
+myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 20, 0.025);
 
 %% Input files
 barbara_filename = '../data/barbara.png';
@@ -198,63 +198,63 @@ displayColoredImage(canyon_large_ahe, 'Canyon Large AHE');
 %% Contrast-Limited Adaptive Histogram Equalization (CLAHE)
 
 %%
-% *Barbara CLAHE with 0.5 Threshold*
+% *Barbara CLAHE with 0.05 Threshold*
 tic;
 barbara_clahe_high = myCLAHEWithMediumWindowSize(barbara);
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/barbara_clahe_high.mat', 'barbara_clahe_high');
 end
-displayGrayScale(barbara_clahe_high, 'Barbara Clahe with threshold 0.5');
+displayGrayScale(barbara_clahe_high, 'Barbara Clahe with threshold 0.05');
 
 %%
-% *Barbara CLAHE with 0.25 Threshold*
+% *Barbara CLAHE with 0.025 Threshold*
 tic;
 barbara_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(barbara);
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/barbara_clahe_low.mat', 'barbara_clahe_low');
 end
-displayGrayScale(barbara_clahe_low, 'Barbara Clahe with threshold 0.25');
+displayGrayScale(barbara_clahe_low, 'Barbara Clahe with threshold 0.025');
 
 %%
-% *TEM CLAHE with 0.5 Threshold*
+% *TEM CLAHE with 0.05 Threshold*
 tic;
 tem_clahe_high = myCLAHEWithMediumWindowSize(tem);
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/tem_clahe_high.mat', 'tem_clahe_high');
 end
-displayGrayScale(tem_clahe_high, 'TEM CLAHE with threshold 0.5');
+displayGrayScale(tem_clahe_high, 'TEM CLAHE with threshold 0.05');
 
 %%
-% *TEM CLAHE with 0.25 Threshold*
+% *TEM CLAHE with 0.025 Threshold*
 tic;
 tem_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(tem);
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/tem_clahe_low.mat', 'tem_clahe_low');
 end
-displayGrayScale(tem_clahe_low, 'TEM CLAHE with threshold 0.25');
+displayGrayScale(tem_clahe_low, 'TEM CLAHE with threshold 0.025');
 
 %%
-% *Canyon CLAHE with 0.5 Threshold*
+% *Canyon CLAHE with 0.05 Threshold*
 tic;
 canyon_clahe_high = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSize(img));
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/canyon_clahe_high.mat', 'tem_clahe_high');
 end
-displayGrayScale(canyon_clahe_high, 'Canyon CLAHE with threshold 0.5');
+displayGrayScale(canyon_clahe_high, 'Canyon CLAHE with threshold 0.05');
 
 %%
-% *Canyon CLAHE with 0.25 Threshold*
+% *Canyon CLAHE with 0.025 Threshold*
 tic;
 canyon_clahe_low = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSizeAndHalfThreshold(img));
 elapsedTime = toc;
 if elapsedTime > 300
     save('../images/canyon_clahe_low.mat', 'tem_clahe_low');
 end
-displayGrayScale(canyon_clahe_low, 'Canyon CLAHE with threshold 0.25');
+displayGrayScale(canyon_clahe_low, 'Canyon CLAHE with threshold 0.025');
 
 

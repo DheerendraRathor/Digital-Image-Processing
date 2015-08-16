@@ -79,23 +79,23 @@ circles = imread(circles_filename);
 shrink_by_2 = myShrinkImageByFactorD(circles, 2);
 toc;
 displayGrayScale(shrink_by_2, <span class="string">'shrinked by factor of 2'</span>);
-</pre><pre class="codeoutput">Elapsed time is 2.450872 seconds.
+</pre><pre class="codeoutput">Elapsed time is 3.205812 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <p><b>Shrinked by factor of 3</b></p><pre class="codeinput">tic;
 shrink_by_3 = myShrinkImageByFactorD(circles, 3);
 toc;
 displayGrayScale(shrink_by_3, <span class="string">'shrinked by factor of 3'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.993078 seconds.
+</pre><pre class="codeoutput">Elapsed time is 1.424173 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2>Image Enlargement<a name="7"></a></h2><p><b>Original Image</b></p><pre class="codeinput">displayGrayScale(barbara, <span class="string">'Original Barbara'</span>);
 </pre><img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <p><b>Bilinear Interpolaion</b></p><pre class="codeinput">tic;
 bilinear_interpolation = myBilinearInterpolation(barbara);
 toc;
 displayGrayScale(bilinear_interpolation, <span class="string">'barbara with bilinear interpolation'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.011820 seconds.
+</pre><pre class="codeoutput">Elapsed time is 0.023387 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <p><b>Nearest Neighbour Interpolation</b></p><pre class="codeinput">tic;
 nearest_neighbour_interpolation = myNearestNeighborInterpolation(barbara);
 toc;
 displayGrayScale(nearest_neighbour_interpolation, <span class="string">'barbara with nearest neighbour interpolation'</span>);
-</pre><pre class="codeoutput">Elapsed time is 0.077314 seconds.
+</pre><pre class="codeoutput">Elapsed time is 0.157594 seconds.
 </pre><img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Image Resizing
