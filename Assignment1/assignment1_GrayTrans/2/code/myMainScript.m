@@ -12,8 +12,7 @@
 myNumOfColors= 256;
 myColorScale = [ [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' ];
 displayGrayScale = @(image, title) displayImageWithColorBar(image, title, myColorScale);
-displayColoredImage = @(image, title) displayImageWithColorBar(image, title, myColorScale);
-
+displayColoredImage = @(image, title) displayImageWithColorBar(image, title, getColormapForRGBImage(image));
 %%
 % *Lambda functions for AHE with low, medium and High window size*
 myAHEforLowWindowSize = @(image) myAHE(image, 2);
