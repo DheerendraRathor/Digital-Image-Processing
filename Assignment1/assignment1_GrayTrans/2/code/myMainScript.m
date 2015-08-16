@@ -35,20 +35,27 @@ canyon = imread(canyon_filename);
 tem = imread(tem_filename);
 
 %%
-% Original Barbara
+% *Original Barbara*
 displayGrayScale(barbara, 'Original Barbara');
 
 %% 
-% Original Canyon
+% *Original Canyon*
 displayColoredImage(canyon, 'Original Canyon');
 
 %%
-% Original TEM
+% *Original TEM*
 displayGrayScale(tem, 'Original TEM');
 
 %% Linear Contrast Stretching
 % 
-%   
+% *Psuedocode:*
+%
+%   min := min(image)
+%   max := max(image)
+%
+%   if (min is not equal to max):
+%       for every point p in image:
+%           I(p) := 255 * ((I(p) - min) / (max - min))
 %
 
 %%
