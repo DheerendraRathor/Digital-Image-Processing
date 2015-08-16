@@ -1,0 +1,491 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Question 2</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-08-16"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Question 2</h1><!--introduction--><p>Objectives:</p><div><ul><li>Linear Contrast Stretching</li><li>Histogram Equalization (HE)</li><li>Adaptive Histogram Equalization (AHE)</li><li>Contrast-Limited Adaptive Histogram Equalization (CLAHE)</li></ul></div><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Colormap and Helper Functions</a></li><li><a href="#4">Input files</a></li><li><a href="#8">Linear Contrast Stretching</a></li><li><a href="#12">Histogram Equilization (HE)</a></li><li><a href="#16">Adaptive Histogram Equalization (AHE)</a></li><li><a href="#26">Contrast-Limited Adaptive Histogram Equalization (CLAHE)</a></li></ul></div><h2>Colormap and Helper Functions<a name="1"></a></h2><pre class="codeinput">myNumOfColors= 256;
+myColorScale = [ [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' ];
+displayGrayScale = @(image, title) displayImageWithColorBar(image, title, myColorScale);
+displayColoredImage = @(image, title) displayImageWithColorBar(image, title, getColormapForRGBImage(image));
+</pre><p><b>Lambda functions for AHE with low, medium and High window size</b></p><pre class="codeinput">myAHEforLowWindowSize = @(image) myAHE(image, 2);
+myAHEforMediumWindowSize = @(image) myAHE(image, 20);
+myAHEforLargeWindowSize = @(image) myAHE(image, 100);
+</pre><p><b>Lambda functions for CLAHE with</b></p><pre class="codeinput">myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 100, 0.05);
+myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 100, 0.025);
+</pre><h2>Input files<a name="4"></a></h2><pre class="codeinput">barbara_filename = <span class="string">'../data/barbara.png'</span>;
+canyon_filename = <span class="string">'../data/canyon.png'</span>;
+tem_filename = <span class="string">'../data/TEM.png'</span>;
+
+barbara = imread(barbara_filename);
+canyon = imread(canyon_filename);
+tem = imread(tem_filename);
+</pre><p><b>Original Barbara</b></p><pre class="codeinput">displayGrayScale(barbara, <span class="string">'Original Barbara'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <p><b>Original Canyon</b></p><pre class="codeinput">displayColoredImage(canyon, <span class="string">'Original Canyon'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <p><b>Original TEM</b></p><pre class="codeinput">displayGrayScale(tem, <span class="string">'Original TEM'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <h2>Linear Contrast Stretching<a name="8"></a></h2><p><b>Psuedocode:</b></p><pre class="language-matlab">min <span class="string">:=</span> <span class="string">min(image)</span>
+max <span class="string">:=</span> <span class="string">max(image)</span>
+</pre><pre class="language-matlab"><span class="keyword">if</span> (min is not equal to max):
+    <span class="keyword">for</span> every point <span class="string">p</span> <span class="string">in</span> <span class="string">image:</span>
+        I(p) := 255 * ((I(p) - min) / (max - min))
+</pre><p><b>Barbara Linear Contrast Stretched</b></p><pre class="codeinput">tic;
+barbara_linear = myLinearContrastStretching(barbara);
+toc;
+displayGrayScale(barbara_linear, <span class="string">'Barbara Linear Contrast Stretched'</span>);
+</pre><pre class="codeoutput">Elapsed time is 0.017999 seconds.
+</pre><img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <p><b>TEM Linear Contrast Stretched</b></p><pre class="codeinput">tic;
+tem_linear = myLinearContrastStretching(tem);
+toc;
+displayGrayScale(tem_linear, <span class="string">'TEM Linear Contrast Stretched'</span>);
+</pre><pre class="codeoutput">Elapsed time is 0.032279 seconds.
+</pre><img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <p><b>Canyon Linear Contrast Stretched</b></p><pre class="codeinput">tic;
+canyon_linear = processColoredImage(canyon, @myLinearContrastStretching);
+toc;
+displayColoredImage(canyon_linear, <span class="string">'Canyon Linear Contrast Stretched'</span>);
+</pre><pre class="codeoutput">Elapsed time is 0.047713 seconds.
+</pre><img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <h2>Histogram Equilization (HE)<a name="12"></a></h2><p><b>Barbara HE</b></p><pre class="codeinput">tic;
+barbara_he = myHE(barbara);
+toc;
+displayGrayScale(barbara_he, <span class="string">'Barbara HE'</span>);
+</pre><pre class="codeoutput">Elapsed time is 0.303317 seconds.
+</pre><img vspace="5" hspace="5" src="myMainScript_07.png" alt=""> <p><b>TEM He</b></p><pre class="codeinput">tic;
+tem_he = myHE(tem);
+toc;
+displayGrayScale(tem_he, <span class="string">'TEM HE'</span>);
+</pre><pre class="codeoutput">Elapsed time is 0.018087 seconds.
+</pre><img vspace="5" hspace="5" src="myMainScript_08.png" alt=""> <p><b>Canyon HE</b></p><pre class="codeinput">tic;
+canyon_he = processColoredImage(canyon, @myHE);
+toc;
+displayColoredImage(canyon_he, <span class="string">'Canyon HE'</span>);
+</pre><pre class="codeoutput">Elapsed time is 0.027440 seconds.
+</pre><img vspace="5" hspace="5" src="myMainScript_09.png" alt=""> <h2>Adaptive Histogram Equalization (AHE)<a name="16"></a></h2><p><b>Barbara AHE With Medium Window Size</b></p><pre class="codeinput">tic;
+barbara_medium_ahe = myAHEforMediumWindowSize(barbara);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/barbara_medium_ahe.mat'</span>, <span class="string">'barbara_medium_ahe'</span>);
+<span class="keyword">end</span>
+displayGrayScale(barbara_medium_ahe, <span class="string">'Barbara Medium AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_10.png" alt=""> <p><b>Barbara AHE With Small Window Size</b></p><pre class="codeinput">tic;
+barbara_small_ahe = myAHEforLowWindowSize(barbara);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/barbara_small_ahe.mat'</span>, <span class="string">'barbara_small_ahe'</span>);
+<span class="keyword">end</span>
+displayGrayScale(barbara_small_ahe, <span class="string">'Barbara Small AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_11.png" alt=""> <p><b>Barbara AHE With Large Window Size</b></p><pre class="codeinput">tic;
+barbara_large_ahe = myAHEforLargeWindowSize(barbara);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/barbara_large_ahe.mat'</span>, <span class="string">'barbara_large_ahe'</span>);
+<span class="keyword">end</span>
+displayGrayScale(barbara_large_ahe, <span class="string">'Barbara Large AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_12.png" alt=""> <p><b>TEM AHE With Medium Window Size</b></p><pre class="codeinput">tic;
+tem_medium_ahe = myAHEforMediumWindowSize(tem);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/tem_medium_ahe.mat'</span>, <span class="string">'tem_medium_ahe'</span>);
+<span class="keyword">end</span>
+displayGrayScale(tem_medium_ahe, <span class="string">'TEM Medium AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_13.png" alt=""> <p><b>TEM AHE With Small Window Size</b></p><pre class="codeinput">tic;
+tem_small_ahe = myAHEforLowWindowSize(tem);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/tem_small_ahe.mat'</span>, <span class="string">'tem_small_ahe'</span>);
+<span class="keyword">end</span>
+displayGrayScale(tem_small_ahe, <span class="string">'TEM Small AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_14.png" alt=""> <p><b>TEM AHE With Large Window Size</b></p><pre class="codeinput">tic;
+tem_large_ahe = myAHEforLargeWindowSize(tem);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/tem_large_ahe.mat'</span>, <span class="string">'tem_large_ahe'</span>);
+<span class="keyword">end</span>
+displayGrayScale(tem_large_ahe, <span class="string">'TEM Large AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_15.png" alt=""> <p><b>Canyon AHE with medium Window Size</b></p><pre class="codeinput">tic;
+canyon_medium_ahe = processColoredImage(canyon, @(image) myAHEforMediumWindowSize(image));
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/canyon_medium_ahe.mat'</span>, <span class="string">'canyon_medium_ahe'</span>);
+<span class="keyword">end</span>
+displayColoredImage(canyon_medium_ahe, <span class="string">'Canyon Medium AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_16.png" alt=""> <p><b>Canyon AHE with medium Window Size</b></p><pre class="codeinput">tic;
+canyon_small_ahe = processColoredImage(canyon, @(image) myAHEforLowWindowSize(image));
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/canyon_small_ahe.mat'</span>, <span class="string">'canyon_small_ahe'</span>);
+<span class="keyword">end</span>
+displayColoredImage(canyon_small_ahe, <span class="string">'Canyon Small AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_17.png" alt=""> <p><b>Canyon AHE with Large Window Size</b></p><pre class="codeinput">tic;
+canyon_large_ahe = processColoredImage(canyon, @(image) myAHEforLargeWindowSize(image));
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/canyon_large_ahe.mat'</span>, <span class="string">'canyon_large_ahe'</span>);
+<span class="keyword">end</span>
+displayColoredImage(canyon_large_ahe, <span class="string">'Canyon Large AHE'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_18.png" alt=""> <h2>Contrast-Limited Adaptive Histogram Equalization (CLAHE)<a name="26"></a></h2><p><b>Barbara CLAHE with 0.05 Threshold</b></p><pre class="codeinput">tic;
+barbara_clahe_high = myCLAHEWithMediumWindowSize(barbara);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/barbara_clahe_high.mat'</span>, <span class="string">'barbara_clahe_high'</span>);
+<span class="keyword">end</span>
+displayGrayScale(barbara_clahe_high, <span class="string">'Barbara Clahe with threshold 0.05'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_19.png" alt=""> <p><b>Barbara CLAHE with 0.025 Threshold</b></p><pre class="codeinput">tic;
+barbara_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(barbara);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/barbara_clahe_low.mat'</span>, <span class="string">'barbara_clahe_low'</span>);
+<span class="keyword">end</span>
+displayGrayScale(barbara_clahe_low, <span class="string">'Barbara Clahe with threshold 0.025'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_20.png" alt=""> <p><b>TEM CLAHE with 0.05 Threshold</b></p><pre class="codeinput">tic;
+tem_clahe_high = myCLAHEWithMediumWindowSize(tem);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/tem_clahe_high.mat'</span>, <span class="string">'tem_clahe_high'</span>);
+<span class="keyword">end</span>
+displayGrayScale(tem_clahe_high, <span class="string">'TEM CLAHE with threshold 0.05'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_21.png" alt=""> <p><b>TEM CLAHE with 0.025 Threshold</b></p><pre class="codeinput">tic;
+tem_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(tem);
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/tem_clahe_low.mat'</span>, <span class="string">'tem_clahe_low'</span>);
+<span class="keyword">end</span>
+displayGrayScale(tem_clahe_low, <span class="string">'TEM CLAHE with threshold 0.025'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_22.png" alt=""> <p><b>Canyon CLAHE with 0.05 Threshold</b></p><pre class="codeinput">tic;
+canyon_clahe_high = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSize(img));
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/canyon_clahe_high.mat'</span>, <span class="string">'tem_clahe_high'</span>);
+<span class="keyword">end</span>
+displayColoredImage(canyon_clahe_high, <span class="string">'Canyon CLAHE with threshold 0.05'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_23.png" alt=""> <p><b>Canyon CLAHE with 0.025 Threshold</b></p><pre class="codeinput">tic;
+canyon_clahe_low = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSizeAndHalfThreshold(img));
+elapsedTime = toc;
+<span class="keyword">if</span> elapsedTime &gt; 300
+    save(<span class="string">'../images/canyon_clahe_low.mat'</span>, <span class="string">'tem_clahe_low'</span>);
+<span class="keyword">end</span>
+displayColoredImage(canyon_clahe_low, <span class="string">'Canyon CLAHE with threshold 0.025'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_24.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Question 2
+% Objectives:
+% 
+% * Linear Contrast Stretching
+% * Histogram Equalization (HE)
+% * Adaptive Histogram Equalization (AHE)
+% * Contrast-Limited Adaptive Histogram Equalization (CLAHE)
+%
+
+%% Colormap and Helper Functions
+
+myNumOfColors= 256;
+myColorScale = [ [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' , [0:1/(myNumOfColors-1):1]' ];
+displayGrayScale = @(image, title) displayImageWithColorBar(image, title, myColorScale);
+displayColoredImage = @(image, title) displayImageWithColorBar(image, title, getColormapForRGBImage(image));
+%%
+% *Lambda functions for AHE with low, medium and High window size*
+myAHEforLowWindowSize = @(image) myAHE(image, 2);
+myAHEforMediumWindowSize = @(image) myAHE(image, 20);
+myAHEforLargeWindowSize = @(image) myAHE(image, 100);
+
+%%
+% *Lambda functions for CLAHE with*
+myCLAHEWithMediumWindowSize = @(image) myCLAHE(image, 100, 0.05);
+myCLAHEWithMediumWindowSizeAndHalfThreshold = @(image) myCLAHE(image, 100, 0.025);
+
+%% Input files
+barbara_filename = '../data/barbara.png';
+canyon_filename = '../data/canyon.png';
+tem_filename = '../data/TEM.png';
+
+barbara = imread(barbara_filename);
+canyon = imread(canyon_filename);
+tem = imread(tem_filename);
+
+%%
+% *Original Barbara*
+displayGrayScale(barbara, 'Original Barbara');
+
+%% 
+% *Original Canyon*
+displayColoredImage(canyon, 'Original Canyon');
+
+%%
+% *Original TEM*
+displayGrayScale(tem, 'Original TEM');
+
+%% Linear Contrast Stretching
+% 
+% *Psuedocode:*
+%
+%   min := min(image)
+%   max := max(image)
+%
+%   if (min is not equal to max):
+%       for every point p in image:
+%           I(p) := 255 * ((I(p) - min) / (max - min))
+%
+
+%%
+% *Barbara Linear Contrast Stretched*
+tic;
+barbara_linear = myLinearContrastStretching(barbara);
+toc;
+displayGrayScale(barbara_linear, 'Barbara Linear Contrast Stretched');
+
+%%
+% *TEM Linear Contrast Stretched*
+tic;
+tem_linear = myLinearContrastStretching(tem);
+toc;
+displayGrayScale(tem_linear, 'TEM Linear Contrast Stretched');
+
+%%
+% *Canyon Linear Contrast Stretched*
+tic;
+canyon_linear = processColoredImage(canyon, @myLinearContrastStretching);
+toc;
+displayColoredImage(canyon_linear, 'Canyon Linear Contrast Stretched');
+
+%% Histogram Equilization (HE)
+
+%% 
+% *Barbara HE*
+tic;
+barbara_he = myHE(barbara);
+toc;
+displayGrayScale(barbara_he, 'Barbara HE');
+
+%%
+% *TEM He*
+tic;
+tem_he = myHE(tem);
+toc;
+displayGrayScale(tem_he, 'TEM HE');
+
+%%
+% *Canyon HE*
+tic;
+canyon_he = processColoredImage(canyon, @myHE);
+toc;
+displayColoredImage(canyon_he, 'Canyon HE');
+
+%%  Adaptive Histogram Equalization (AHE)
+
+%%
+% *Barbara AHE With Medium Window Size*
+tic;
+barbara_medium_ahe = myAHEforMediumWindowSize(barbara);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/barbara_medium_ahe.mat', 'barbara_medium_ahe');
+end
+displayGrayScale(barbara_medium_ahe, 'Barbara Medium AHE');
+
+%%
+% *Barbara AHE With Small Window Size*
+tic;
+barbara_small_ahe = myAHEforLowWindowSize(barbara);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/barbara_small_ahe.mat', 'barbara_small_ahe');
+end
+displayGrayScale(barbara_small_ahe, 'Barbara Small AHE');
+
+%%
+% *Barbara AHE With Large Window Size*
+tic;
+barbara_large_ahe = myAHEforLargeWindowSize(barbara);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/barbara_large_ahe.mat', 'barbara_large_ahe');
+end
+displayGrayScale(barbara_large_ahe, 'Barbara Large AHE');
+
+%%
+% *TEM AHE With Medium Window Size*
+tic;
+tem_medium_ahe = myAHEforMediumWindowSize(tem);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/tem_medium_ahe.mat', 'tem_medium_ahe');
+end
+displayGrayScale(tem_medium_ahe, 'TEM Medium AHE');
+
+%%
+% *TEM AHE With Small Window Size*
+tic;
+tem_small_ahe = myAHEforLowWindowSize(tem);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/tem_small_ahe.mat', 'tem_small_ahe');
+end
+displayGrayScale(tem_small_ahe, 'TEM Small AHE');
+
+%%
+% *TEM AHE With Large Window Size*
+tic;
+tem_large_ahe = myAHEforLargeWindowSize(tem);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/tem_large_ahe.mat', 'tem_large_ahe');
+end
+displayGrayScale(tem_large_ahe, 'TEM Large AHE');
+
+%%
+% *Canyon AHE with medium Window Size*
+tic;
+canyon_medium_ahe = processColoredImage(canyon, @(image) myAHEforMediumWindowSize(image));
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/canyon_medium_ahe.mat', 'canyon_medium_ahe');
+end
+displayColoredImage(canyon_medium_ahe, 'Canyon Medium AHE');
+
+%%
+% *Canyon AHE with medium Window Size*
+tic;
+canyon_small_ahe = processColoredImage(canyon, @(image) myAHEforLowWindowSize(image));
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/canyon_small_ahe.mat', 'canyon_small_ahe');
+end
+displayColoredImage(canyon_small_ahe, 'Canyon Small AHE');
+
+
+%%
+% *Canyon AHE with Large Window Size*
+tic;
+canyon_large_ahe = processColoredImage(canyon, @(image) myAHEforLargeWindowSize(image));
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/canyon_large_ahe.mat', 'canyon_large_ahe');
+end
+displayColoredImage(canyon_large_ahe, 'Canyon Large AHE');
+
+%% Contrast-Limited Adaptive Histogram Equalization (CLAHE)
+
+%%
+% *Barbara CLAHE with 0.05 Threshold*
+tic;
+barbara_clahe_high = myCLAHEWithMediumWindowSize(barbara);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/barbara_clahe_high.mat', 'barbara_clahe_high');
+end
+displayGrayScale(barbara_clahe_high, 'Barbara Clahe with threshold 0.05');
+
+%%
+% *Barbara CLAHE with 0.025 Threshold*
+tic;
+barbara_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(barbara);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/barbara_clahe_low.mat', 'barbara_clahe_low');
+end
+displayGrayScale(barbara_clahe_low, 'Barbara Clahe with threshold 0.025');
+
+%%
+% *TEM CLAHE with 0.05 Threshold*
+tic;
+tem_clahe_high = myCLAHEWithMediumWindowSize(tem);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/tem_clahe_high.mat', 'tem_clahe_high');
+end
+displayGrayScale(tem_clahe_high, 'TEM CLAHE with threshold 0.05');
+
+%%
+% *TEM CLAHE with 0.025 Threshold*
+tic;
+tem_clahe_low = myCLAHEWithMediumWindowSizeAndHalfThreshold(tem);
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/tem_clahe_low.mat', 'tem_clahe_low');
+end
+displayGrayScale(tem_clahe_low, 'TEM CLAHE with threshold 0.025');
+
+%%
+% *Canyon CLAHE with 0.05 Threshold*
+tic;
+canyon_clahe_high = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSize(img));
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/canyon_clahe_high.mat', 'tem_clahe_high');
+end
+displayColoredImage(canyon_clahe_high, 'Canyon CLAHE with threshold 0.05');
+
+%%
+% *Canyon CLAHE with 0.025 Threshold*
+tic;
+canyon_clahe_low = processColoredImage(canyon, @(img) myCLAHEWithMediumWindowSizeAndHalfThreshold(img));
+elapsedTime = toc;
+if elapsedTime > 300
+    save('../images/canyon_clahe_low.mat', 'tem_clahe_low');
+end
+displayColoredImage(canyon_clahe_low, 'Canyon CLAHE with threshold 0.025');
+
+
+
+##### SOURCE END #####
+--></body></html>
