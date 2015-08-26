@@ -1,7 +1,7 @@
 function patched_image = myPatchBasedFiltering(image, patch, window, sigma)
     addpath('../../common/');
     
-    image = image(1:100,1:100);
+    image = image(1:50,1:50);
     
     [rows, cols] = size(image);
     patched_image = zeros(rows, cols);

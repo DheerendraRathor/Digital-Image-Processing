@@ -1,4 +1,4 @@
-function bilateral_image = myBilateralFiltering(image)
+function bilateral_image = myBilateralFiltering(image, window_size, sigmaD, sigmaR)
     addpath('../../common/');
     
     [rows, cols] = size(image);
@@ -8,7 +8,8 @@ function bilateral_image = myBilateralFiltering(image)
     wb = waitbar(0, 'Bilateral Filtering Happening');
     for i=1:rows
         for j=1:cols
-            bilateral_image(i,j) = denoisePixel(noisy_image, [i,j], 5, 0.1, 0.1);
+            bilateral_image(i,j) = denoisePixel(noisy_image, [i,j],...
+                window_size, sigmaD, sigmaR);
         end
         waitbar(i/rows);
     end
