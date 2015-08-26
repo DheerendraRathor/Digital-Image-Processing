@@ -1,9 +1,0 @@
-function bilateral_image = myBilateralFiltering(image, gaussi)
-    [row, col] = size(image);
-    bilateral_image = zeros(row, col);
-    gaussian_filter = fspecial('gaussian', gaussian_dimension);
-    
-    noisy_image = myGaussianNoiser(image);
-                    
-    imshow(noisy_image);
-end

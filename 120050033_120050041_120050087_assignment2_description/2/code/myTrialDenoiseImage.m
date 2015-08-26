@@ -1,4 +1,4 @@
-function denoisedPixel = myTrialDenoisePixel(image, p1, window_size, sigmaD, sigmaR)
+function denoisedPixel = myTrialDenoiseImage(image, p1, window_size, sigmaD, sigmaR)
     [rows, cols] = size(image);
     i = p1(1,1);
     j = p1(1,2);
