@@ -2,6 +2,7 @@ function patched_image = myPatchBasedFiltering(image, patch, window, sigma)
     addpath('../../common/');
     
     image = image(1:50,1:50);
+    image = myLinearContrastStretching(image);
     
     [rows, cols] = size(image);
     patched_image = zeros(rows, cols);
@@ -41,11 +42,18 @@ function patched_image = myPatchBasedFiltering(image, patch, window, sigma)
     toc;
     close(wb);
     
-    show_images = zeros(rows, cols, 3);
-    show_images(:,:,1) = image(:,:);
-    show_images(:,:,2) = noisy_image(:,:);
-    show_images(:,:,3) = patched_image(:,:);
+    rmds = myRMSDofImage(image, patched_image);
+    display(rmds);
     
-    myShowImages(show_images);
     patched_image = uint8(patched_image);
+    
+    figure;
+    imagesc(image);
+    
+    figure;
+    imagesc(uint8(noisy_image));
+    
+    figure;
+    imagesc(patched_image);
+    
 end
