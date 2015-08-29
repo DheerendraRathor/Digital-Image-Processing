@@ -28,12 +28,10 @@ function patched_image = myPatchBasedFiltering(image, patch, window, sigma)
     tic;
     for i=1:rows
         for j=1:cols
-            patched_image(i,j) = myGetPatchedPixel(noisy_image, ...
-                [i,j], patch, window, sigma);
+            patched_image(i,j) = myGetPatchedPixel(noisy_image, [i,j], patch, window, sigma);
             
 %%%%% Padding Based Algorithm %%%%%
-%             patched_image(i,j) = myPaddingBasedPatchedPixel(noisy_image, ...
-%                 [i,j], window, sigma, memoised_windowed_image);
+%             patched_image(i,j) = myPaddingBasedPatchedPixel(noisy_image, [i,j], window, sigma, memoised_windowed_image);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         end
@@ -41,6 +39,9 @@ function patched_image = myPatchBasedFiltering(image, patch, window, sigma)
     end
     toc;
     close(wb);
+    
+    rmds = myRMSDofImage(image, noisy_image);
+    display(rmds);
     
     rmds = myRMSDofImage(image, patched_image);
     display(rmds);
