@@ -4,7 +4,7 @@ function bilateral_image = myBilateralFiltering(image, window_size, sigmaD, sigm
     [rows, cols] = size(image);
     bilateral_image = zeros(rows, cols);
     noisy_image = myGaussianNoiser(image);
-    
+    tic;
     wb = waitbar(0, 'Bilateral Filtering Happening');
     for i=1:rows
         for j=1:cols
@@ -13,7 +13,8 @@ function bilateral_image = myBilateralFiltering(image, window_size, sigmaD, sigm
         end
         waitbar(i/rows);
     end
-    close(wb);         
+    close(wb);
+    toc;
     
     show_images = zeros(rows, cols, 3);
     show_images(:,:,1) = image(:,:);
