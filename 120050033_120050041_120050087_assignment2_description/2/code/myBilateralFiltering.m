@@ -16,6 +16,10 @@ function bilateral_image = myBilateralFiltering(image, window_size, sigmaD, sigm
     close(wb);
     toc;
     
+    display(myRMSDofImage(image, noisy_image));
+    rmsd = myRMSDofImage(image, bilateral_image);
+    display(rmsd);
+    
     show_images = zeros(rows, cols, 3);
     show_images(:,:,1) = image(:,:);
     show_images(:,:,2) = noisy_image(:,:);
