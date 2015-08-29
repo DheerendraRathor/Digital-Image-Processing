@@ -1,7 +1,7 @@
 function out_image = myLinearContrastStretching(image)
 
-minimum = double(min(min(image)));
-maximum = double(max(max(image)));
+minimum = double(min(image(:)));
+maximum = double(max(image(:)));
 out_image = image;
 
 if (minimum < maximum)

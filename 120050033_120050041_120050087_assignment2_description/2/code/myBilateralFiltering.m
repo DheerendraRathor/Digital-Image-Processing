@@ -1,10 +1,11 @@
-function bilateral_image = myBilateralFiltering(image, window_size, sigmaD, sigmaR)
+function [bilateral_image, gaussian_mask] = myBilateralFiltering(image, window_size, sigmaD, sigmaR)
     addpath('../../common/');
     
     [rows, cols] = size(image);
     bilateral_image = zeros(rows, cols);
     noisy_image = myGaussianNoiser(image);
-    tic;
+    gaussian_mask = noisy_image - image;
+
     wb = waitbar(0, 'Bilateral Filtering Happening');
     for i=1:rows
         for j=1:cols
@@ -14,17 +15,11 @@ function bilateral_image = myBilateralFiltering(image, window_size, sigmaD, sigm
         waitbar(i/rows);
     end
     close(wb);
-    toc;
     
-    display(myRMSDofImage(image, noisy_image));
-    rmsd = myRMSDofImage(image, bilateral_image);
-    display(rmsd);
-    
-    show_images = zeros(rows, cols, 3);
-    show_images(:,:,1) = image(:,:);
-    show_images(:,:,2) = noisy_image(:,:);
-    show_images(:,:,3) = bilateral_image(:,:);
-    
-    myShowImages(show_images);
-    bilateral_image = uint8(bilateral_image);
+%     show_images = zeros(rows, cols, 3);
+%     show_images(:,:,1) = image;
+%     show_images(:,:,2) = noisy_image;
+%     show_images(:,:,3) = bilateral_image;
+%     
+%     myShowImages(show_images);
 end
