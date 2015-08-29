@@ -11,4 +11,5 @@ function padded_image = myPaddedImage(image, padding)
     cmax = csize - padding(1,2);
     
     padded_image(rmin:rmax, cmin:cmax) = image;
+    
 end
