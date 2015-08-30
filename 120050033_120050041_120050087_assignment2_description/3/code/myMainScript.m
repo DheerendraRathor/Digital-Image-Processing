@@ -8,7 +8,7 @@
 %% Variables and Parameters
 
 isotropize = 1.0;
-factor = 10;
+factor = 2;
 patch_size = 9;
 window_size = 25;
 addpath('../../common/');
