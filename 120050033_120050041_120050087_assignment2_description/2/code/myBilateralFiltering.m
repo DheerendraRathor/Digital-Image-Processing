@@ -1,7 +1,7 @@
 function bilateral_image = myBilateralFiltering(noisy_image, window_size, sigmaD, sigmaR)
     addpath('../../common/');
     
-    [rows, cols] = size(image);
+    [rows, cols] = size(noisy_image);
     bilateral_image = zeros(rows, cols);
 
     wb = waitbar(0, 'Bilateral Filtering Happening');

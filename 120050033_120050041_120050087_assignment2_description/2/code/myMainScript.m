@@ -14,8 +14,8 @@ load '../data/barbara.mat'
 imageOrig = myLinearContrastStretching(imageOrig);
 [rows, cols] = size(imageOrig);
 window_size = 8;
-sigmaD = 3;
-sigmaR = 25;
+sigmaD = 2.43;
+sigmaR = 22.5;
 noisy_image = myGaussianNoiser(imageOrig);
 gaussian_mask = noisy_image - imageOrig;
 
