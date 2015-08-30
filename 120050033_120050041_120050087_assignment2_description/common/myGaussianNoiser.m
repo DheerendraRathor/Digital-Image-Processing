@@ -1,6 +1,6 @@
 function noisy_image = myGaussianNoiser(image)
-    maximum_intensity = max(max(image));
-    minimum_intensity = min(min(image));
+    maximum_intensity = max(image(:));
+    minimum_intensity = min(image(:));
     
     standard_deviation = 0.05*(maximum_intensity - minimum_intensity);
     
