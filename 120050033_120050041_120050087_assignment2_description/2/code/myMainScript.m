@@ -10,12 +10,13 @@
 %% Original Image and parameter
 
 % Image is loaded in variable imageOrig
+addpath('../../common')
 load '../data/barbara.mat'
-imageOrig = myLinearContrastStretching(imageOrig);
+
 [rows, cols] = size(imageOrig);
-window_size = 8;
-sigmaD = 2.187;
-sigmaR = 22.5;
+window_size = 9;
+sigmaD = 1.43489;
+sigmaR = 9.9;
 noisy_image = myGaussianNoiser(imageOrig);
 gaussian_mask = noisy_image - imageOrig;
 
@@ -31,29 +32,36 @@ end
 
 %% 
 % *Smoothen Image*
+stretched_orig = myLinearContrastStretching(imageOrig);
+stretched_noisy = myLinearContrastStretching(noisy_image);
+stretched_bilateral = myLinearContrastStretching(bilateral_filtered_image);
 show_images = zeros(rows, cols, 3);
-show_images(:, :, 1) = imageOrig;
-show_images(:, :, 2) = noisy_image;
-show_images(:, :, 3) = bilateral_filtered_image;
+show_images(:, :, 1) = stretched_orig;
+show_images(:, :, 2) = stretched_noisy;
+show_images(:, :, 3) = stretched_bilateral;
 myShowImages(show_images,...
     'Side by Side comparison of imageOrig, noisy image and smooth image');
 
 show_images = zeros(rows, cols, 1);
-show_images(:, :, 1) = imageOrig;
+show_images(:, :, 1) = stretched_orig;
 myShowImages(show_images, 'Original Barbara');
 
 show_images = zeros(rows, cols, 1);
-show_images(:, :, 1) = noisy_image;
+show_images(:, :, 1) = stretched_noisy;
 myShowImages(show_images, 'Noisy Barbara');
 
 show_images = zeros(rows, cols, 1);
-show_images(:, :, 1) = bilateral_filtered_image;
+show_images(:, :, 1) = stretched_bilateral;
 myShowImages(show_images, 'Smooth Barbara');
 
 %%
 % *Gaussian Mask*
 show_images = zeros(rows, cols, 1);
-show_images(:,:,1) = gaussian_mask;
+show_images(:,:,1) = myLinearContrastStretching(gaussian_mask);
+myShowImages(show_images, 'Gaussian Mask (Linear Contrast Stretched)');
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = gaussian_mask;
 myShowImages(show_images, 'Gaussian Mask');
 
 %%
@@ -71,7 +79,8 @@ disp(['Optimal sigmaR = ' num2str(sigmaR)]);
 % * 0.9 * sigmaD and sigmaR *
 sigmaDNew = 0.9 * sigmaD;
 tic;
-bilateral_filtered_image_1 = myBilateralFiltering(noisy_image, window_size, sigmaDNew, sigmaR);
+bilateral_filtered_image_1 = myBilateralFiltering(noisy_image,...
+    window_size, sigmaDNew, sigmaR);
 elapsed_time = toc;
 if elapsed_time > 300
     save('../images/barbara_1.mat', 'bilateral_filtered_image_1')
@@ -83,7 +92,8 @@ disp(['RMSD with 0.9sigmaD and sigmaR = ' num2str(new_rmsd)]);
 % * 1.1 * sigmaD and sigmaR *
 sigmaDNew = 1.1 * sigmaD;
 tic;
-bilateral_filtered_image_2 = myBilateralFiltering(noisy_image, window_size, sigmaDNew, sigmaR);
+bilateral_filtered_image_2 = myBilateralFiltering(noisy_image,...
+    window_size, sigmaDNew, sigmaR);
 elapsed_time = toc;
 if elapsed_time > 300
     save('../images/barbara_2.mat', 'bilateral_filtered_image_2')
@@ -96,7 +106,8 @@ disp(['RMSD with 1.1sigmaD and sigmaR = ' num2str(new_rmsd)]);
 % * sigmaD and 0.9 * sigmaR *
 sigmaRNew = 0.9 * sigmaR;
 tic;
-bilateral_filtered_image_3 = myBilateralFiltering(noisy_image, window_size, sigmaD, sigmaRNew);
+bilateral_filtered_image_3 = myBilateralFiltering(noisy_image,...
+    window_size, sigmaD, sigmaRNew);
 elapsed_time = toc;
 if elapsed_time > 300
     save('../images/barbara_3.mat', 'bilateral_filtered_image_3')
@@ -108,7 +119,8 @@ disp(['RMSD with sigmaD and 0.9sigmaR = ' num2str(new_rmsd)]);
 % * sigmaD and 1.1 * sigmaR *
 sigmaRNew = 1.1 * sigmaR;
 tic;
-bilateral_filtered_image_4 = myBilateralFiltering(noisy_image, window_size, sigmaD, sigmaRNew);
+bilateral_filtered_image_4 = myBilateralFiltering(noisy_image,...
+    window_size, sigmaD, sigmaRNew);
 elapsed_time = toc;
 if elapsed_time > 300
     save('../images/barbara_4.mat', 'bilateral_filtered_image_4')

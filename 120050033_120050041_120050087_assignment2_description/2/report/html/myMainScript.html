@@ -1,0 +1,302 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Edge-preserving Smoothing using Bilateral Filtering</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-08-30"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Edge-preserving Smoothing using Bilateral Filtering</h1><!--introduction--><p><b>Objective</b></p><div><ul><li>Adding gaussian noise in the image</li><li>Applying bilateral filter to smoothen out image</li><li>Minimize Root Mean Square Distance</li></ul></div><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Original Image and parameter</a></li><li><a href="#2">Generating noise and smoothening image</a></li><li><a href="#6">Tweaked Parameters</a></li></ul></div><h2>Original Image and parameter<a name="1"></a></h2><pre class="codeinput"><span class="comment">% Image is loaded in variable imageOrig</span>
+addpath(<span class="string">'../../common'</span>)
+load <span class="string">'../data/barbara.mat'</span>
+
+[rows, cols] = size(imageOrig);
+window_size = 9;
+sigmaD = 1.43489;
+sigmaR = 9.9;
+noisy_image = myGaussianNoiser(imageOrig);
+gaussian_mask = noisy_image - imageOrig;
+</pre><h2>Generating noise and smoothening image<a name="2"></a></h2><p>Window size: 9, sigmaD: 3, sigmaR: 9</p><pre class="codeinput">tic;
+bilateral_filtered_image = myBilateralFiltering(noisy_image,<span class="keyword">...</span>
+    window_size, sigmaD, sigmaR);
+elapsed_time = toc;
+<span class="keyword">if</span> elapsed_time &gt; 300
+    save(<span class="string">'../images/barbara_smooth.mat'</span>, <span class="string">'bilateral_filtered_image'</span>);
+<span class="keyword">end</span>
+</pre><p><b>Smoothen Image</b></p><pre class="codeinput">stretched_orig = myLinearContrastStretching(imageOrig);
+stretched_noisy = myLinearContrastStretching(noisy_image);
+stretched_bilateral = myLinearContrastStretching(bilateral_filtered_image);
+show_images = zeros(rows, cols, 3);
+show_images(:, :, 1) = stretched_orig;
+show_images(:, :, 2) = stretched_noisy;
+show_images(:, :, 3) = stretched_bilateral;
+myShowImages(show_images,<span class="keyword">...</span>
+    <span class="string">'Side by Side comparison of imageOrig, noisy image and smooth image'</span>);
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = stretched_orig;
+myShowImages(show_images, <span class="string">'Original Barbara'</span>);
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = stretched_noisy;
+myShowImages(show_images, <span class="string">'Noisy Barbara'</span>);
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = stretched_bilateral;
+myShowImages(show_images, <span class="string">'Smooth Barbara'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_03.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_04.png" alt=""> <p><b>Gaussian Mask</b></p><pre class="codeinput">show_images = zeros(rows, cols, 1);
+show_images(:,:,1) = myLinearContrastStretching(gaussian_mask);
+myShowImages(show_images, <span class="string">'Gaussian Mask (Linear Contrast Stretched)'</span>);
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = gaussian_mask;
+myShowImages(show_images, <span class="string">'Gaussian Mask'</span>);
+</pre><img vspace="5" hspace="5" src="myMainScript_05.png" alt=""> <img vspace="5" hspace="5" src="myMainScript_06.png" alt=""> <p><b>Optimal Parameters</b></p><pre class="codeinput">rmsd_with_noised_image = myRMSDofImage(imageOrig, noisy_image);
+Optimal_RMSD = myRMSDofImage(imageOrig, bilateral_filtered_image);
+disp([<span class="string">'RMSD with noised image = '</span> num2str(rmsd_with_noised_image)]);
+disp([<span class="string">'Optimal RMSD with smoothen image = '</span> num2str(Optimal_RMSD)]);
+disp([<span class="string">'Optimal sigmaD = '</span> num2str(sigmaD)]);
+disp([<span class="string">'Optimal sigmaR = '</span> num2str(sigmaR)]);
+</pre><pre class="codeoutput">RMSD with noised image = 4.9952
+Optimal RMSD with smoothen image = 3.2881
+Optimal sigmaD = 1.4349
+Optimal sigmaR = 9.9
+</pre><h2>Tweaked Parameters<a name="6"></a></h2><div><ul><li>0.9 * sigmaD and sigmaR *</li></ul></div><pre class="codeinput">sigmaDNew = 0.9 * sigmaD;
+tic;
+bilateral_filtered_image_1 = myBilateralFiltering(noisy_image,<span class="keyword">...</span>
+    window_size, sigmaDNew, sigmaR);
+elapsed_time = toc;
+<span class="keyword">if</span> elapsed_time &gt; 300
+    save(<span class="string">'../images/barbara_1.mat'</span>, <span class="string">'bilateral_filtered_image_1'</span>)
+<span class="keyword">end</span>
+new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_1);
+disp([<span class="string">'RMSD with 0.9sigmaD and sigmaR = '</span> num2str(new_rmsd)]);
+</pre><pre class="codeoutput">RMSD with 0.9sigmaD and sigmaR = 3.294
+</pre><div><ul><li>1.1 * sigmaD and sigmaR *</li></ul></div><pre class="codeinput">sigmaDNew = 1.1 * sigmaD;
+tic;
+bilateral_filtered_image_2 = myBilateralFiltering(noisy_image,<span class="keyword">...</span>
+    window_size, sigmaDNew, sigmaR);
+elapsed_time = toc;
+<span class="keyword">if</span> elapsed_time &gt; 300
+    save(<span class="string">'../images/barbara_2.mat'</span>, <span class="string">'bilateral_filtered_image_2'</span>)
+<span class="keyword">end</span>
+new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_2);
+disp([<span class="string">'RMSD with 1.1sigmaD and sigmaR = '</span> num2str(new_rmsd)]);
+</pre><pre class="codeoutput">RMSD with 1.1sigmaD and sigmaR = 3.2893
+</pre><div><ul><li>sigmaD and 0.9 * sigmaR *</li></ul></div><pre class="codeinput">sigmaRNew = 0.9 * sigmaR;
+tic;
+bilateral_filtered_image_3 = myBilateralFiltering(noisy_image,<span class="keyword">...</span>
+    window_size, sigmaD, sigmaRNew);
+elapsed_time = toc;
+<span class="keyword">if</span> elapsed_time &gt; 300
+    save(<span class="string">'../images/barbara_3.mat'</span>, <span class="string">'bilateral_filtered_image_3'</span>)
+<span class="keyword">end</span>
+new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_3);
+disp([<span class="string">'RMSD with sigmaD and 0.9sigmaR = '</span> num2str(new_rmsd)]);
+</pre><pre class="codeoutput">RMSD with sigmaD and 0.9sigmaR = 3.313
+</pre><div><ul><li>sigmaD and 1.1 * sigmaR *</li></ul></div><pre class="codeinput">sigmaRNew = 1.1 * sigmaR;
+tic;
+bilateral_filtered_image_4 = myBilateralFiltering(noisy_image,<span class="keyword">...</span>
+    window_size, sigmaD, sigmaRNew);
+elapsed_time = toc;
+<span class="keyword">if</span> elapsed_time &gt; 300
+    save(<span class="string">'../images/barbara_4.mat'</span>, <span class="string">'bilateral_filtered_image_4'</span>)
+<span class="keyword">end</span>
+new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_4);
+disp([<span class="string">'RMSD with sigmaD and 1.1sigmaR = '</span> num2str(new_rmsd)]);
+</pre><pre class="codeoutput">RMSD with sigmaD and 1.1sigmaR = 3.3008
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Edge-preserving Smoothing using Bilateral Filtering
+%
+% *Objective*
+% 
+% * Adding gaussian noise in the image
+% * Applying bilateral filter to smoothen out image
+% * Minimize Root Mean Square Distance
+%
+
+%% Original Image and parameter
+
+% Image is loaded in variable imageOrig
+addpath('../../common')
+load '../data/barbara.mat'
+
+[rows, cols] = size(imageOrig);
+window_size = 9;
+sigmaD = 1.43489;
+sigmaR = 9.9;
+noisy_image = myGaussianNoiser(imageOrig);
+gaussian_mask = noisy_image - imageOrig;
+
+%% Generating noise and smoothening image
+% Window size: 9, sigmaD: 3, sigmaR: 9
+tic;
+bilateral_filtered_image = myBilateralFiltering(noisy_image,...
+    window_size, sigmaD, sigmaR);
+elapsed_time = toc;
+if elapsed_time > 300
+    save('../images/barbara_smooth.mat', 'bilateral_filtered_image');
+end
+
+%% 
+% *Smoothen Image*
+stretched_orig = myLinearContrastStretching(imageOrig);
+stretched_noisy = myLinearContrastStretching(noisy_image);
+stretched_bilateral = myLinearContrastStretching(bilateral_filtered_image);
+show_images = zeros(rows, cols, 3);
+show_images(:, :, 1) = stretched_orig;
+show_images(:, :, 2) = stretched_noisy;
+show_images(:, :, 3) = stretched_bilateral;
+myShowImages(show_images,...
+    'Side by Side comparison of imageOrig, noisy image and smooth image');
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = stretched_orig;
+myShowImages(show_images, 'Original Barbara');
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = stretched_noisy;
+myShowImages(show_images, 'Noisy Barbara');
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = stretched_bilateral;
+myShowImages(show_images, 'Smooth Barbara');
+
+%%
+% *Gaussian Mask*
+show_images = zeros(rows, cols, 1);
+show_images(:,:,1) = myLinearContrastStretching(gaussian_mask);
+myShowImages(show_images, 'Gaussian Mask (Linear Contrast Stretched)');
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = gaussian_mask;
+myShowImages(show_images, 'Gaussian Mask');
+
+%%
+% *Optimal Parameters*
+rmsd_with_noised_image = myRMSDofImage(imageOrig, noisy_image);
+Optimal_RMSD = myRMSDofImage(imageOrig, bilateral_filtered_image);
+disp(['RMSD with noised image = ' num2str(rmsd_with_noised_image)]);
+disp(['Optimal RMSD with smoothen image = ' num2str(Optimal_RMSD)]);
+disp(['Optimal sigmaD = ' num2str(sigmaD)]);
+disp(['Optimal sigmaR = ' num2str(sigmaR)]);
+
+%% Tweaked Parameters
+
+%%
+% * 0.9 * sigmaD and sigmaR *
+sigmaDNew = 0.9 * sigmaD;
+tic;
+bilateral_filtered_image_1 = myBilateralFiltering(noisy_image,...
+    window_size, sigmaDNew, sigmaR);
+elapsed_time = toc;
+if elapsed_time > 300
+    save('../images/barbara_1.mat', 'bilateral_filtered_image_1')
+end
+new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_1);
+disp(['RMSD with 0.9sigmaD and sigmaR = ' num2str(new_rmsd)]);
+
+%%
+% * 1.1 * sigmaD and sigmaR *
+sigmaDNew = 1.1 * sigmaD;
+tic;
+bilateral_filtered_image_2 = myBilateralFiltering(noisy_image,...
+    window_size, sigmaDNew, sigmaR);
+elapsed_time = toc;
+if elapsed_time > 300
+    save('../images/barbara_2.mat', 'bilateral_filtered_image_2')
+end
+new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_2);
+disp(['RMSD with 1.1sigmaD and sigmaR = ' num2str(new_rmsd)]);
+
+
+%%
+% * sigmaD and 0.9 * sigmaR *
+sigmaRNew = 0.9 * sigmaR;
+tic;
+bilateral_filtered_image_3 = myBilateralFiltering(noisy_image,...
+    window_size, sigmaD, sigmaRNew);
+elapsed_time = toc;
+if elapsed_time > 300
+    save('../images/barbara_3.mat', 'bilateral_filtered_image_3')
+end
+new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_3);
+disp(['RMSD with sigmaD and 0.9sigmaR = ' num2str(new_rmsd)]);
+
+%%
+% * sigmaD and 1.1 * sigmaR *
+sigmaRNew = 1.1 * sigmaR;
+tic;
+bilateral_filtered_image_4 = myBilateralFiltering(noisy_image,...
+    window_size, sigmaD, sigmaRNew);
+elapsed_time = toc;
+if elapsed_time > 300
+    save('../images/barbara_4.mat', 'bilateral_filtered_image_4')
+end
+new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_4);
+disp(['RMSD with sigmaD and 1.1sigmaR = ' num2str(new_rmsd)]);
+
+
+##### SOURCE END #####
+--></body></html>
