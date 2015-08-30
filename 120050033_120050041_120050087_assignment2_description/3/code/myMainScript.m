@@ -8,13 +8,13 @@
 %% Variables and Parameters
 
 isotropize = 1.0;
-factor = 2;
+factor = 10;
 patch_size = 9;
 window_size = 25;
 addpath('../../common/');
 load '../data/barbara.mat';
 input_image = imageOrig;
-sigmaOptimal = 0.9;
+sigmaOptimal = 1.056;
 
 %% Gaussian Mask
 gaussian_mask = fspecial('gaussian',...
@@ -50,22 +50,22 @@ if elapsed_time > 300
 end
 
 images = zeros(rows, cols, 3);
-images(:, :, 1) = input_image;
-images(:, :, 2) = noisy_image;
-images(:, :, 3) = output_image;
+images(:, :, 1) = myLinearContrastStretching(input_image);
+images(:, :, 2) = myLinearContrastStretching(noisy_image);
+images(:, :, 3) = myLinearContrastStretching(output_image);
 myShowImages(images,...
     'Side by Side comparison of original, noisay and smooth barbara');
 
 images = zeros(rows, cols, 1);
-images(:, :, 1) = input_image;
+images(:, :, 1) = myLinearContrastStretching(input_image);
 myShowImages(images, 'Original barbara');
 
 images = zeros(rows, cols, 1);
-images(:, :, 1) = noisy_image;
+images(:, :, 1) = myLinearContrastStretching(noisy_image);
 myShowImages(images, 'Noisy barbara');
 
 images = zeros(rows, cols, 1);
-images(:, :, 1) = output_image;
+images(:, :, 1) = myLinearContrastStretching(output_image);
 myShowImages(images, 'Smooth barbara');
 
 optimal_RMSD = myRMSDofImage(input_image, output_image);

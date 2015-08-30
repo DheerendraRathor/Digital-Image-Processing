@@ -40,5 +40,5 @@ function weight = myGetWeight(current, focused, d1, d2, gaussian, sigma)
     
     diff_matrix = current(range_r1, range_c1) - focused(range_r2, range_c2);
     euclidian_dist = norm(gaussian(range_rg, range_cg).*diff_matrix);
-    weight = exp(-euclidian_dist/(sigma.^2));
+    weight = exp(-(euclidian_dist.^2)/(sigma.^2));
 end
