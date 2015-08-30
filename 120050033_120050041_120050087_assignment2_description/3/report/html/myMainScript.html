@@ -1,0 +1,218 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Edge-preserving Smoothing using Patch-Based Filtering</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-08-30"><meta name="DC.source" content="myMainScript.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Edge-preserving Smoothing using Patch-Based Filtering</h1><!--introduction--><p><b>Objectives:</b></p><div><ul><li>Apply the patch based filtering</li><li>Calculate and minimize the RMSD</li></ul></div><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Variables and Parameters</a></li><li><a href="#2">Gaussian Mask</a></li><li><a href="#4">Subsampling Image with gaussian blur of std 0.66</a></li><li><a href="#5">Noisy Image</a></li><li><a href="#6">Smoothening image</a></li><li><a href="#7">Tweaked Parameters</a></li></ul></div><h2>Variables and Parameters<a name="1"></a></h2><pre class="codeinput">isotropize = 1.0;
+factor = 20;
+patch_size = 9;
+window_size = 25;
+addpath(<span class="string">'../../common/'</span>);
+load <span class="string">'../data/barbara.mat'</span>;
+input_image = imageOrig;
+sigmaOptimal = 1.0;
+</pre><h2>Gaussian Mask<a name="2"></a></h2><pre class="codeinput">gaussian_mask = fspecial(<span class="string">'gaussian'</span>, [patch_size, patch_size], isotropize);
+[rows, cols] = size(gaussian_mask);
+gaussian_mask_stretched = myLinearContrastStretching(gaussian_mask);
+images = zeros(rows, cols, 1);
+images(:, :, 1) = gaussian_mask_stretched;
+</pre><p><b>Mask used to make images Isotropic</b></p><pre class="codeinput">myShowImages(images);
+</pre><img vspace="5" hspace="5" src="myMainScript_01.png" alt=""> <h2>Subsampling Image with gaussian blur of std 0.66<a name="4"></a></h2><pre class="codeinput">input_image = input_image(1:factor:size(input_image, 1),1:factor:size(input_image, 2));
+gaussian_filter = fspecial(<span class="string">'gaussian'</span>, [3, 3], 0.66);
+input_image = imfilter(input_image, gaussian_filter);
+[rows, cols] = size(input_image);
+</pre><h2>Noisy Image<a name="5"></a></h2><pre class="codeinput">noisy_image = myGaussianNoiser(input_image);
+rmsd_with_noisy_image = myRMSDofImage(input_image, noisy_image);
+disp([<span class="string">'RMSD with noisy image = '</span>, num2str(rmsd_with_noisy_image)]);
+</pre><pre class="codeoutput">RMSD with noisy image = 3.8428
+</pre><h2>Smoothening image<a name="6"></a></h2><pre class="codeinput">tic;
+output_image = myPatchBasedFiltering(noisy_image, patch_size,<span class="keyword">...</span>
+    window_size, sigmaOptimal, gaussian_mask);
+elapsed_time = toc;
+<span class="keyword">if</span> elapsed_time &gt; 300
+    save(<span class="string">'../images/barbara_patch_optimal.mat'</span>, <span class="string">'output_image'</span>)
+<span class="keyword">end</span>
+
+images = zeros(rows, cols, 3);
+images(:, :, 1) = input_image;
+images(:, :, 2) = noisy_image;
+images(:, :, 3) = output_image;
+myShowImages(images);
+
+optimal_RMSD = myRMSDofImage(input_image, output_image);
+disp([<span class="string">'RMSD with optimal output = '</span>, num2str(optimal_RMSD)]);
+disp([<span class="string">'Optimal sigma = '</span>, num2str(sigmaOptimal)]);
+</pre><pre class="codeoutput">RMSD with optimal output = 3.7151
+Optimal sigma = 1
+</pre><img vspace="5" hspace="5" src="myMainScript_02.png" alt=""> <h2>Tweaked Parameters<a name="7"></a></h2><p><b>RMSD with 0.9 sigmaOptimal</b></p><pre class="codeinput">tic;
+output_image_1 = myPatchBasedFiltering(noisy_image, patch_size,<span class="keyword">...</span>
+    window_size, 0.9*sigmaOptimal, gaussian_mask);
+elapsed_time = toc;
+<span class="keyword">if</span> elapsed_time &gt; 300
+    save(<span class="string">'../images/barabara_01.mat'</span>, <span class="string">'output_image_1'</span>)
+<span class="keyword">end</span>
+new_RMSD = myRMSDofImage(input_image, output_image_1);
+disp([<span class="string">'RMSD with 0.9*sigmaOptimal output = '</span>, num2str(new_RMSD)]);
+</pre><pre class="codeoutput">RMSD with 0.9*sigmaOptimal output = 3.3828
+</pre><p><b>RMSD with 1.1 sigmaOptimal</b></p><pre class="codeinput">tic;
+output_image_2 = myPatchBasedFiltering(noisy_image, patch_size,<span class="keyword">...</span>
+    window_size, 1.1*sigmaOptimal, gaussian_mask);
+elapsed_time = toc;
+<span class="keyword">if</span> elapsed_time &gt; 300
+    save(<span class="string">'../images/barabara_02.mat'</span>, <span class="string">'output_image_2'</span>)
+<span class="keyword">end</span>
+new_RMSD = myRMSDofImage(input_image, output_image_2);
+disp([<span class="string">'RMSD with 1.1*sigmaOptimal output = '</span>, num2str(new_RMSD)]);
+</pre><pre class="codeoutput">RMSD with 1.1*sigmaOptimal output = 4.1442
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Edge-preserving Smoothing using Patch-Based Filtering
+% 
+% *Objectives:*
+%
+% * Apply the patch based filtering
+% * Calculate and minimize the RMSD
+
+%% Variables and Parameters
+
+isotropize = 1.0;
+factor = 20;
+patch_size = 9;
+window_size = 25;
+addpath('../../common/');
+load '../data/barbara.mat';
+input_image = imageOrig;
+sigmaOptimal = 1.0;
+
+%% Gaussian Mask
+gaussian_mask = fspecial('gaussian', [patch_size, patch_size], isotropize);
+[rows, cols] = size(gaussian_mask);
+gaussian_mask_stretched = myLinearContrastStretching(gaussian_mask);
+images = zeros(rows, cols, 1);
+images(:, :, 1) = gaussian_mask_stretched;
+
+%%
+% *Mask used to make images Isotropic*
+myShowImages(images);
+
+%% Subsampling Image with gaussian blur of std 0.66
+input_image = input_image(1:factor:size(input_image, 1),1:factor:size(input_image, 2));
+gaussian_filter = fspecial('gaussian', [3, 3], 0.66);
+input_image = imfilter(input_image, gaussian_filter);
+[rows, cols] = size(input_image);
+
+%% Noisy Image
+noisy_image = myGaussianNoiser(input_image);
+rmsd_with_noisy_image = myRMSDofImage(input_image, noisy_image);
+disp(['RMSD with noisy image = ', num2str(rmsd_with_noisy_image)]);
+
+%% Smoothening image
+tic;
+output_image = myPatchBasedFiltering(noisy_image, patch_size,...
+    window_size, sigmaOptimal, gaussian_mask);
+elapsed_time = toc;
+if elapsed_time > 300
+    save('../images/barbara_patch_optimal.mat', 'output_image')
+end
+
+images = zeros(rows, cols, 3);
+images(:, :, 1) = input_image;
+images(:, :, 2) = noisy_image;
+images(:, :, 3) = output_image;
+myShowImages(images);
+
+optimal_RMSD = myRMSDofImage(input_image, output_image);
+disp(['RMSD with optimal output = ', num2str(optimal_RMSD)]);
+disp(['Optimal sigma = ', num2str(sigmaOptimal)]);
+
+%% Tweaked Parameters
+% *RMSD with 0.9 sigmaOptimal*
+tic;
+output_image_1 = myPatchBasedFiltering(noisy_image, patch_size,...
+    window_size, 0.9*sigmaOptimal, gaussian_mask);
+elapsed_time = toc;
+if elapsed_time > 300
+    save('../images/barabara_01.mat', 'output_image_1')
+end
+new_RMSD = myRMSDofImage(input_image, output_image_1);
+disp(['RMSD with 0.9*sigmaOptimal output = ', num2str(new_RMSD)]);
+
+%%
+% *RMSD with 1.1 sigmaOptimal*
+tic;
+output_image_2 = myPatchBasedFiltering(noisy_image, patch_size,...
+    window_size, 1.1*sigmaOptimal, gaussian_mask);
+elapsed_time = toc;
+if elapsed_time > 300
+    save('../images/barabara_02.mat', 'output_image_2')
+end
+new_RMSD = myRMSDofImage(input_image, output_image_2);
+disp(['RMSD with 1.1*sigmaOptimal output = ', num2str(new_RMSD)]);
+
+
+
+##### SOURCE END #####
+--></body></html>

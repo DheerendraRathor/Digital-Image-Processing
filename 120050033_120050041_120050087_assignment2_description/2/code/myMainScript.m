@@ -14,7 +14,7 @@ load '../data/barbara.mat'
 imageOrig = myLinearContrastStretching(imageOrig);
 [rows, cols] = size(imageOrig);
 window_size = 8;
-sigmaD = 2.43;
+sigmaD = 2.187;
 sigmaR = 22.5;
 noisy_image = myGaussianNoiser(imageOrig);
 gaussian_mask = noisy_image - imageOrig;
@@ -22,7 +22,8 @@ gaussian_mask = noisy_image - imageOrig;
 %% Generating noise and smoothening image
 % Window size: 9, sigmaD: 3, sigmaR: 9
 tic;
-bilateral_filtered_image = myBilateralFiltering(noisy_image, window_size, sigmaD, sigmaR);
+bilateral_filtered_image = myBilateralFiltering(noisy_image,...
+    window_size, sigmaD, sigmaR);
 elapsed_time = toc;
 if elapsed_time > 300
     save('../images/barbara_smooth.mat', 'bilateral_filtered_image');
@@ -34,13 +35,26 @@ show_images = zeros(rows, cols, 3);
 show_images(:, :, 1) = imageOrig;
 show_images(:, :, 2) = noisy_image;
 show_images(:, :, 3) = bilateral_filtered_image;
-myShowImages(show_images);
+myShowImages(show_images,...
+    'Side by Side comparison of imageOrig, noisy image and smooth image');
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = imageOrig;
+myShowImages(show_images, 'Original Barbara');
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = noisy_image;
+myShowImages(show_images, 'Noisy Barbara');
+
+show_images = zeros(rows, cols, 1);
+show_images(:, :, 1) = bilateral_filtered_image;
+myShowImages(show_images, 'Smooth Barbara');
 
 %%
 % *Gaussian Mask*
 show_images = zeros(rows, cols, 1);
 show_images(:,:,1) = gaussian_mask;
-myShowImages(show_images);
+myShowImages(show_images, 'Gaussian Mask');
 
 %%
 % *Optimal Parameters*
@@ -54,7 +68,7 @@ disp(['Optimal sigmaR = ' num2str(sigmaR)]);
 %% Tweaked Parameters
 
 %%
-% * 0.9 * sigmaD and sigmaR
+% * 0.9 * sigmaD and sigmaR *
 sigmaDNew = 0.9 * sigmaD;
 tic;
 bilateral_filtered_image_1 = myBilateralFiltering(noisy_image, window_size, sigmaDNew, sigmaR);
@@ -66,7 +80,7 @@ new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_1);
 disp(['RMSD with 0.9sigmaD and sigmaR = ' num2str(new_rmsd)]);
 
 %%
-% * 0.9 * sigmaD and sigmaR
+% * 1.1 * sigmaD and sigmaR *
 sigmaDNew = 1.1 * sigmaD;
 tic;
 bilateral_filtered_image_2 = myBilateralFiltering(noisy_image, window_size, sigmaDNew, sigmaR);
@@ -79,7 +93,7 @@ disp(['RMSD with 1.1sigmaD and sigmaR = ' num2str(new_rmsd)]);
 
 
 %%
-% * sigmaD and 0.9 * sigmaR
+% * sigmaD and 0.9 * sigmaR *
 sigmaRNew = 0.9 * sigmaR;
 tic;
 bilateral_filtered_image_3 = myBilateralFiltering(noisy_image, window_size, sigmaD, sigmaRNew);
@@ -91,7 +105,7 @@ new_rmsd = myRMSDofImage(imageOrig, bilateral_filtered_image_3);
 disp(['RMSD with sigmaD and 0.9sigmaR = ' num2str(new_rmsd)]);
 
 %%
-% * sigmaD and 1.1 * sigmaR
+% * sigmaD and 1.1 * sigmaR *
 sigmaRNew = 1.1 * sigmaR;
 tic;
 bilateral_filtered_image_4 = myBilateralFiltering(noisy_image, window_size, sigmaD, sigmaRNew);

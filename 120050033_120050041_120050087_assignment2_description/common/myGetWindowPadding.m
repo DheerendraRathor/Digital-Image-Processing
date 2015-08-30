@@ -1,4 +1,4 @@
-function [above, below, left, right] = myGetWindowDelta(image, point, window)
+function paddings = myGetWindowPadding(image, point, window)
     [rows, cols] = size(image);
     
     i = point(1,1);
@@ -12,4 +12,5 @@ function [above, below, left, right] = myGetWindowDelta(image, point, window)
     left = max([1, j - csz]) - (j - csz);
     right = (j + csz) - min([j + csz, cols]);
     
+    paddings = [above, below, left, right];
 end

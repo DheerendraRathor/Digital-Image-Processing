@@ -1,12 +1,6 @@
-function patched_image = myPatchBasedFiltering(image, patch, window, sigma)
-    addpath('../../common/');
-    
-    image = image(1:50,1:50);
-    image = myLinearContrastStretching(image);
-    
-    [rows, cols] = size(image);
+function patched_image = myPatchBasedFiltering(noisy_image, patch, window, sigma, gaussian_weight)
+    [rows, cols] = size(noisy_image);
     patched_image = zeros(rows, cols);
-    noisy_image = myGaussianNoiser(image);
     
     wb = waitbar(0, 'Patch Based Filtering Happening');
     
@@ -25,10 +19,9 @@ function patched_image = myPatchBasedFiltering(image, patch, window, sigma)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    tic;
     for i=1:rows
         for j=1:cols
-            patched_image(i,j) = myGetPatchedPixel(noisy_image, [i,j], patch, window, sigma);
+            patched_image(i,j) = myGetPatchedPixel(noisy_image, [i,j], patch, window, sigma, gaussian_weight);
             
 %%%%% Padding Based Algorithm %%%%%
 %             patched_image(i,j) = myPaddingBasedPatchedPixel(noisy_image, [i,j], window, sigma, memoised_windowed_image);
@@ -37,24 +30,5 @@ function patched_image = myPatchBasedFiltering(image, patch, window, sigma)
         end
         waitbar(i/rows);
     end
-    toc;
     close(wb);
-    
-    rmds = myRMSDofImage(image, noisy_image);
-    display(rmds);
-    
-    rmds = myRMSDofImage(image, patched_image);
-    display(rmds);
-    
-    patched_image = uint8(patched_image);
-    
-    figure;
-    imagesc(image);
-    
-    figure;
-    imagesc(uint8(noisy_image));
-    
-    figure;
-    imagesc(patched_image);
-    
 end

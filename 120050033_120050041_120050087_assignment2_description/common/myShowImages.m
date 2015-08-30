@@ -1,4 +1,4 @@
-function myShowImages(images)
+function myShowImages(images, image_title)
     count = size(images, 3);
     
     figure('units','normalized','outerposition',[0 0 1 1]);
@@ -13,4 +13,5 @@ function myShowImages(images)
     end
     colorbar;
     set(sub, 'position', original_size);
+    suptitle(image_title);
 end
