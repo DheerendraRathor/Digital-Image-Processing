@@ -14,7 +14,7 @@ window_size = 25;
 addpath('../../common/');
 load '../data/barbara.mat';
 input_image = imageOrig;
-sigmaOptimal = 1.0;
+sigmaOptimal = 0.9;
 
 %% Gaussian Mask
 gaussian_mask = fspecial('gaussian',...
