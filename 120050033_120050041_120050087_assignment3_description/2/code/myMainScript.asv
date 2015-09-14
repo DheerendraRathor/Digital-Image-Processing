@@ -1,0 +1,18 @@
+%% MyMainScript
+
+tic;
+%% Your code here
+addpath('../../common/');
+
+load ../data/boat.mat;
+[rows, cols] = size(imageOrig);
+
+corner_detected_image = myButterworthFiltering(noisy_image, 75, 2);
+
+images = zeros(rows, cols, );
+images(:, :, 1) = imageOrig;
+images(:, :, 2) = corner_detected_image;
+
+myShowImages(images, 'Harris Corner Boat');
+
+toc;
