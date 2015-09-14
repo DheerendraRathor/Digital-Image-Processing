@@ -6,5 +6,5 @@ function [out_image] = myButterworthFiltering(noisy_image, d0, n)
     
     filtered_fourier = filter.*fourier_shifted;
     out_image = abs(ifft2(filtered_fourier));
-    
+ 
 end
