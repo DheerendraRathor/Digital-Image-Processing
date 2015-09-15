@@ -8,13 +8,13 @@
 %% Variables and Parameters
 
 isotropize = 1.0;
-factor = 10;
+factor = 2;
 patch_size = 9;
 window_size = 25;
 addpath('../../common/');
 load '../data/barbara.mat';
 input_image = imageOrig;
-sigmaOptimal = 1.056;
+sigmaOptimal = 1.62;
 
 %% Gaussian Mask
 gaussian_mask = fspecial('gaussian',...
