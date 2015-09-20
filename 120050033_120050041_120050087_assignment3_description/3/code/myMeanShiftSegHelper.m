@@ -3,9 +3,7 @@ function final_image = myMeanShiftSegHelper(paddedImage, epsilon, window,...
 
     final_image = paddedImage;
     wb = waitbar(0, sprintf('Mean shift segementation. Iteration: %d/%d', iteration_count, iterations));
-    
-    tic;
-    
+        
     for i = rmin:rmax
         for j=cmin:cmax
         
@@ -29,7 +27,7 @@ function final_image = myMeanShiftSegHelper(paddedImage, epsilon, window,...
         end
         waitbar(i/rows);
     end
-    toc;
+    
     close(wb);
 
 end
