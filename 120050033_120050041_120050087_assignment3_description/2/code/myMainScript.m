@@ -5,8 +5,9 @@ tic;
 addpath('../../common/');
 
 load ../data/boat.mat;
-%gpu_image = gpuArray(imageOrig);
 gpu_image = imageOrig;
-corner_detected_image = myHarrisCornerDetector(gpu_image, 50, [55, 55], 0.4);
+
+% harris_image = myHarrisCornerDetector(gpu_image, 20, [9, 9], 0.24);
+harris_image = myHarrisCornerDetector(gpu_image, 20, [15, 15], 0.24);
 
 toc;
