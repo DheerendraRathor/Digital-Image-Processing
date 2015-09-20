@@ -1,4 +1,0 @@
-function myMeanShiftSegmentation(image)
-    addpath('../../common/')
-    [paddedImage rmin rmax cmin cmax] = myPaddedImage(image, [5, 5]);
-end
