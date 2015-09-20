@@ -1,4 +1,4 @@
-function [harris, gx, gy, eigen_1_harris, eigen_2_harris, appended_image] = myHarrisCornerDetector(image, sigma, window, k)
+function [harris, gx, ] = myHarrisCornerDetector(image, sigma, window, k)
     [rows, cols] = size(image);
        
     harris = zeros(rows, cols);
@@ -44,8 +44,6 @@ function [harris, gx, gy, eigen_1_harris, eigen_2_harris, appended_image] = myHa
         waitbar(i/rows);
     end
     close(wb);
-    
-    appended_image = harris + rescaled_image./2;
       
 %     figure; imshow(uint8(image));
 %     figure; imshow(gx, [0, 1]);
