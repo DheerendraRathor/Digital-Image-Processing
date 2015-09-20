@@ -8,6 +8,6 @@ load ../data/boat.mat;
 gpu_image = imageOrig;
 
 % harris_image = myHarrisCornerDetector(gpu_image, 20, [9, 9], 0.24);
-harris_image = myHarrisCornerDetector(gpu_image, 0.5, [21, 21], 0.005);
+harris_image = myHarrisCornerDetector(gpu_image, 1, [27, 27], 0.01);
 
 toc;

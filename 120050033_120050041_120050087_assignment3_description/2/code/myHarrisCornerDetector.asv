@@ -51,6 +51,6 @@ function harris = myHarrisCornerDetector(image, sigma, window, k)
     figure; imshow(harris, [0, 1]);
     figure; imshow(eigen_1_harris, [0, 1]);
     figure; imshow(eigen_2_harris, [0, 1]);
-    figure; imshow(harris + rescaled_image./2, [0, 1]);
+    figure; imshow(eigen_2_harris, [0, 1]);
 
 end
