@@ -47,4 +47,5 @@ myShowImages(images, 'Harris Corner Measured Image');
 
 %% Darkened image overlapped with harris
 
-imshow(appended_image, [0, 1]);
+images = zeros(rows, cols, 1);
+images(:, :, 1) = appended_image
