@@ -1,0 +1,9 @@
+%% Mean Shift Image Segmentation
+% Mean shift Image Segmentation
+
+%%  Initialization
+image = imread('../data/baboonColor.png');
+small_image = imresize(image, 0.5);
+
+%% Image Segmentation
+segmented_image = myMeanShiftSegmentation(small_image, [21 21], [15 25
