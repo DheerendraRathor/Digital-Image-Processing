@@ -22,10 +22,10 @@ function X = myFaceRecognition(X, Y, k, dpu, tpu)
     
     
     %% Testing Phase
-    
+   
     % Number of test images
     num_test_images = size(Y, 2);
-   
+       
     % Project to reduced eigen space of dataset and normalise
     Yn = normc(Y * Evec);
     
@@ -48,5 +48,5 @@ end
 
 function user = getUserId(index, ipu)
 % Finds the user index given the image index and the images per user
-    user = idivide(int32(index-1), int32(ipu), 'floor') + 1;
+    user = idivide(index-1, int(ipu), 'floor') + 1;
 end
