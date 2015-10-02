@@ -1,4 +1,4 @@
-function X = myFaceRecognition(X, Y, k, dpu, tpu)
+function R = myFaceRecognition(X, Y, k, dpu, tpu)
     %% Function Doc
     % X - training dataset
     % Y - testing set
@@ -14,23 +14,25 @@ function X = myFaceRecognition(X, Y, k, dpu, tpu)
     % Computing the k max eigen values, vector of the covariance matrix
     [Evec, Eval] = eigs(C, k);
     
-    % Computing the new datset
+    % Computing the original eigen vectors
     V = X * Evec;
     
-    % Normalizing the new dataset
+    % Normalizing these eigen vectors
     Vn = normc(V);
     
+    % project the dataset
+    Xp = projectDataset(X, Vn);
     
     %% Testing Phase
-   
+    
     % Number of test images
     num_test_images = size(Y, 2);
-       
+   
     % Project to reduced eigen space of dataset and normalise
-    Yn = normc(Y * Evec);
+    Yp = projectDataset(Y, Vn);
     
     % Find the closest dataset point for each point in the testset
-    closest_indices = dsearchn(Vn', Yn');
+    closest_indices = dsearchn(Xp', Yp');
     
     % Iteratign over  the closest indices to find recognition rate
     correct_count = 0;
@@ -43,10 +45,25 @@ function X = myFaceRecognition(X, Y, k, dpu, tpu)
     end
     
     % Recognition Rate
-    display(correct_count / num_test_images);
+    R = correct_count / num_test_images;
+    display(R);
 end
 
 function user = getUserId(index, ipu)
 % Finds the user index given the image index and the images per user
-    user = idivide(index-1, int(ipu), 'floor') + 1;
+    user = idivide(int32(index-1), int32(ipu), 'floor') + 1;
+end
+
+function P = projectDataset(X, V)
+% Projects the dataset X on the vectors V
+    [dimension, cols] = size(X);
+    vectors = size(V, 2);
+    P = zeros(dimension, cols);
+    for image_id = 1:cols
+        projected = zeros(dimension, 1);
+        for eigen_id = 1:vectors
+            projected = projected + V(:, eigen_id)*dot(V(:, eigen_id), X(:, image_id));
+        end
+        P(:, image_id) = projected;
+    end
 end

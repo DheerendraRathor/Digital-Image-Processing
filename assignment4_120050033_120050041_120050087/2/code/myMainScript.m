@@ -9,5 +9,5 @@ toc;
 
 tic;
 % Performing the PCA algorithm
-myFaceRecognition(X, Y, 5, 5, 5)
+myFaceRecognition(X, Y, 100, 5, 5);
 toc;
