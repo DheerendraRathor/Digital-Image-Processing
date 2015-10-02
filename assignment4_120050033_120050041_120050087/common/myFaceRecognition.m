@@ -1,4 +1,4 @@
-function R = myFaceRecognition(X, Y, k, dpu, tpu)
+function R = myFaceRecognition(X, Y, kmin, k, dpu, tpu)
     %% Function Doc
     % X - training dataset
     % Y - testing set
@@ -12,10 +12,10 @@ function R = myFaceRecognition(X, Y, k, dpu, tpu)
     C = X' * X;
     
     % Computing the k max eigen values, vector of the covariance matrix
-    [Evec, Eval] = eigs(C, k);
+    [Evec, Eval] = eigs(C, kmin + k - 1);
     
     % Computing the original eigen vectors
-    V = X * Evec;
+    V = X * Evec(:, kmin:(kmin + k - 1));
     
     % Normalizing these eigen vectors
     Vn = normc(V);

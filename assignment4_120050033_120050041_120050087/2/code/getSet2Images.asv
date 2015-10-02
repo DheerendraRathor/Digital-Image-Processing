@@ -1,15 +1,19 @@
-function X = getSet1Images(image_dir, person_start, person_end, image_start, image_end)
+function [X, Y] = getSet2Images(image_dir)
     X = [];
     
-    % Looping over the people
-    for person = person_start:person_end
-        % Creating the directory name
-        tdir = strcat(image_dir, '/s', num2str(person),'/');
+    folders = dir(image_dir);
+    % Looping over the folders
+    for folder = 2:size(folders, 1)        
+        % Creating the folder name
+        folder_name = strcat(image_dir, folders(folder, 1).name);
         
-        % Looping over the image of that person
-        for image_id = image_start:image_end
+        % Getting the files in that folder
+        files = dir(folder_name);
+        
+        % Iterating over the first 30 files
+        for file = 1:30
             % Creating the name of the file
-            image_filename = strcat(tdir, num2str(image_id),'.pgm');
+            image_filename = strcat(folder_name, num2str(image_id),'.pgm');
             
             % Reading the file
             image = imread(image_filename);
