@@ -4,6 +4,7 @@ function [X, Y] = getSet2Images(image_dir)
     
     folders = dir(image_dir);
     % Looping over the folders, (first 2 are . ..)
+    wb = waitbar(0, 'Compiling Images');
     for folder = 3:size(folders, 1)        
         % Creating the folder name
         folder_name = strcat(image_dir, '/', folders(folder, 1).name);
@@ -31,8 +32,11 @@ function [X, Y] = getSet2Images(image_dir)
             else
                 Y = [Y image_col];
             end
+            
+            waitbar(((folder-3)*60 + file - 2)/(38*60));
         end
     end
+    close(wb);
     
     % Converting image from  uint to double for later calculations
     X = double(X); 
