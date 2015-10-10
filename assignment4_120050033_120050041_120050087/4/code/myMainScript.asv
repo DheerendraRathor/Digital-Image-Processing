@@ -1,0 +1,7 @@
+addpath('../../common/');
+
+image_dir = uigetdir();
+
+X = getSet1Images(image_dir, 36, 40, 1, 10);
+
+Y = getSet1
