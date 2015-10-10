@@ -32,6 +32,7 @@ grid minor;
 %% Yale Face Dataset
 
 image_dir = uigetdir();
+ks = [1, 2, 3, 5, 10, 20, 30, 50, 60, 65, 75, 100, 200, 300, 500, 1000];
 
 tic;
 % Setting up the second training imageset

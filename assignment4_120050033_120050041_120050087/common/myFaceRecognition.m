@@ -7,32 +7,40 @@ function R = myFaceRecognition(X, Y, kmin, k, dpu, tpu)
     % tpu - testign data images per user
 
     %% Training Phase
+    display('Starting');
     
+    tic;
     % Using the faster mode of PCA, computing the C
     C = X' * X;
-    
+    toc;
+
     % Computing the k max eigen values, vector of the covariance matrix
     [Evec, Eval] = eigs(C, kmin + k - 1);
-    
+
     % Computing the original eigen vectors
     V = X * Evec(:, kmin:(kmin + k - 1));
-    
+
     % Normalizing these eigen vectors
     Vn = normc(V);
     
+    tic;
     % project the dataset
-    Xp = projectDataset(X, Vn);
-    
+    Xp = Vn*(Vn\X); 
+    toc;
     %% Testing Phase
     
     % Number of test images
     num_test_images = size(Y, 2);
-   
-    % Project to reduced eigen space of dataset and normalise
-    Yp = projectDataset(Y, Vn);
     
+    tic;
+    % Project to reduced eigen space of dataset and normalise
+    Yp = Vn*(Vn\Y);
+    toc;
+    
+    tic;
     % Find the closest dataset point for each point in the testset
-    closest_indices = dsearchn(Xp', Yp');
+    closest_indices = knnsearch(Xp', Yp');
+    toc;
     
     % Iteratign over  the closest indices to find recognition rate
     predicted_users = idivide(int32(closest_indices' - 1), int32(dpu), 'floor') + 1;
@@ -42,24 +50,4 @@ function R = myFaceRecognition(X, Y, kmin, k, dpu, tpu)
     
     % Recognition Rate
     R = correct_count / num_test_images;
-    %display(R);
-end
-
-function user = getUserId(index, ipu)
-% Finds the user index given the image index and the images per user
-    user = idivide(int32(index-1), int32(ipu), 'floor') + 1;
-end
-
-function P = projectDataset(X, V)
-% Projects the dataset X on the vectors V
-    [dimension, cols] = size(X);
-    vectors = size(V, 2);
-    P = zeros(dimension, cols);
-    for image_id = 1:cols
-        projected = zeros(dimension, 1);
-        for eigen_id = 1:vectors
-            projected = projected + V(:, eigen_id)*dot(V(:, eigen_id), X(:, image_id));
-        end
-        P(:, image_id) = projected;
-    end
 end

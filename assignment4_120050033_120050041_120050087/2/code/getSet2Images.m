@@ -41,5 +41,8 @@ function [X, Y] = getSet2Images(image_dir)
     
     % Converting image from  uint to double for later calculations
     X = double(X); 
-    Y = double(Y); 
+    Y = double(Y);
+    
+    size(X)
+    size(Y)
 end
