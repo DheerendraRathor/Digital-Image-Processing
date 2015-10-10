@@ -35,18 +35,14 @@ function R = myFaceRecognition(X, Y, kmin, k, dpu, tpu)
     closest_indices = dsearchn(Xp', Yp');
     
     % Iteratign over  the closest indices to find recognition rate
-    correct_count = 0;
-    for i =  1:num_test_images
-        predicted_user = getUserId(closest_indices(i, 1), dpu);
-        actual_user = getUserId(i, tpu);
-        if eq(predicted_user, actual_user)
-            correct_count = correct_count + 1;
-        end
-    end
+    predicted_users = idivide(int32(closest_indices' - 1), int32(dpu), 'floor') + 1;
+    actual_users = idivide(int32([1:num_test_images] -1), int32(tpu), 'floor') + 1;
+    differences = predicted_users - actual_users;
+    correct_count = sum(differences(:)==0);
     
     % Recognition Rate
     R = correct_count / num_test_images;
-    display(R);
+    %display(R);
 end
 
 function user = getUserId(index, ipu)

@@ -36,6 +36,7 @@ function [X, Y] = getSet2Images(image_dir)
             waitbar(((folder-3)*60 + file - 2)/(38*60));
         end
     end
+    
     close(wb);
     
     % Converting image from  uint to double for later calculations
