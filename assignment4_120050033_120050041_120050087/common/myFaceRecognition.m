@@ -9,10 +9,8 @@ function R = myFaceRecognition(X, Y, kmin, k, dpu, tpu)
     %% Training Phase
     display('Starting');
     
-    tic;
     % Using the faster mode of PCA, computing the C
     C = X' * X;
-    toc;
 
     % Computing the k max eigen values, vector of the covariance matrix
     [Evec, Eval] = eigs(C, kmin + k - 1);
@@ -23,24 +21,18 @@ function R = myFaceRecognition(X, Y, kmin, k, dpu, tpu)
     % Normalizing these eigen vectors
     Vn = normc(V);
     
-    tic;
     % project the dataset
     Xp = Vn*(Vn\X); 
-    toc;
     %% Testing Phase
     
     % Number of test images
     num_test_images = size(Y, 2);
     
-    tic;
     % Project to reduced eigen space of dataset and normalise
     Yp = Vn*(Vn\Y);
-    toc;
     
-    tic;
     % Find the closest dataset point for each point in the testset
     closest_indices = knnsearch(Xp', Yp');
-    toc;
     
     % Iteratign over  the closest indices to find recognition rate
     predicted_users = idivide(int32(closest_indices' - 1), int32(dpu), 'floor') + 1;

@@ -22,8 +22,10 @@ function R = myForceFaceRecognition(X, Y, YStart, kmin, k, dpu, tpu)
     Vn = normc(V);
     
     % project the dataset
-    Xp = projectDataset(X, Vn);
+    Xp = Vn*(Vn\X);
     toc;
+    
+    threshold = 0.05;
     
     %% Testing Phase
     
@@ -31,13 +33,14 @@ function R = myForceFaceRecognition(X, Y, YStart, kmin, k, dpu, tpu)
     num_test_images = size(Y, 2);
    
     % Project to reduced eigen space of dataset and normalise
-    Yp = projectDataset(Y, Vn);
+    Yp = Vn*(Vn\Y);
     
     % Find the closest dataset point for each point in the testset
     closest_indices = dsearchn(Xp', Yp');
     
     size_Xp = size(Xp);
     pixels = size_Xp(1, 1);
+    rejected = 0;
     
     for i = 1:num_test_images
         closest_match = Xp(:, closest_indices(i, 1));
@@ -45,7 +48,12 @@ function R = myForceFaceRecognition(X, Y, YStart, kmin, k, dpu, tpu)
         difference = Y_column - closest_match;
         square_of_difference = difference.^2;
         distance = sqrt(sum(square_of_difference(:))/pixels);
+        if (distance > threshold)
+            rejected = rejected + 1;
+        end 
     end
+    
+    display(sprintf('Confirm rejected image by threshold = %d', rejected));
     
     % Iteratign over  the closest indices to find recognition rate
     predicted_users = idivide(int32(closest_indices' - 1), int32(dpu), 'floor') + 1;
@@ -53,26 +61,4 @@ function R = myForceFaceRecognition(X, Y, YStart, kmin, k, dpu, tpu)
     differences = predicted_users - actual_users;
     correct_count = sum(differences(:)==0);
     
-    % Recognition Rate
-    R = correct_count / num_test_images;
-    display(R);
-end
-
-function user = getUserId(index, ipu)
-% Finds the user index given the image index and the images per user
-    user = idivide(int32(index-1), int32(ipu), 'floor') + 1;
-end
-
-function P = projectDataset(X, V)
-% Projects the dataset X on the vectors V
-    [dimension, cols] = size(X);
-    vectors = size(V, 2);
-    P = zeros(dimension, cols);
-    for image_id = 1:cols
-        projected = zeros(dimension, 1);
-        for eigen_id = 1:vectors
-            projected = projected + V(:, eigen_id)*dot(V(:, eigen_id), X(:, image_id));
-        end
-        P(:, image_id) = projected;
-    end
 end
