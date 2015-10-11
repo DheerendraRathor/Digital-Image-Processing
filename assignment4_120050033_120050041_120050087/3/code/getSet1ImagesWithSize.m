@@ -1,4 +1,10 @@
-function [X, Sa, Sb] = dheeruSet1Images(image_dir, person_start, person_end, image_start, image_end)
+function [X, Sa, Sb] = getSet1ImagesWithSize(image_dir, person_start, person_end, image_start, image_end)
+% image_dir - Image directory
+% person_start: starting index of folder (from 1)
+% person_end: Ending index of folder 
+% image_start: Starting index of each image (from 1)
+% image_end: Ending index of each image
+
     X = [];
     
     % Looping over the people

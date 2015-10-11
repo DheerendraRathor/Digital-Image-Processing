@@ -1,4 +1,6 @@
 function [Vn, image]  =  plotEigenfaces( X, Y, kmin, k, Sa, Sb)
+% Return Max k eigenvectors with reconstructed image 
+%
 
     C = X' * X;
     
@@ -15,9 +17,6 @@ function [Vn, image]  =  plotEigenfaces( X, Y, kmin, k, Sa, Sb)
     Xp = Vn*(Vn\X);
     
     %% Testing Phase
-    
-    % Number of test images
-    num_test_images = size(Y, 2);
    
     % Project to reduced eigen space of dataset and normalise
     Yp = Vn*(Vn\Y);
