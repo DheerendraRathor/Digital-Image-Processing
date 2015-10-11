@@ -6,7 +6,7 @@
 % Dataset. If the difference is greater then a theshold then image
 % matching will be rejected
 %
-% Threshold of rmsd difference = 15
+% Threshold of rmsd difference = 18
 %
 
 %% Initial setup
