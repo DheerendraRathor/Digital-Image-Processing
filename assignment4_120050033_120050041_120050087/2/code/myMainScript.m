@@ -1,21 +1,22 @@
-%% Runs the facerecognition code
+%% Mini Face Recognition Algorithm
+
+%% Initial Setup 
 addpath('../../common')
- 
+
 %% ORL Dataset
 image_dir = uigetdir();
 
-tic;
 % Setting up the training imageset
 X = getSet1Images(image_dir, 1, 35, 1, 5);
 % Setting up the test imageset
 Y = getSet1Images(image_dir, 1, 35, 6, 10);
-toc;
 
 ks = [1, 2, 3, 5, 10, 20, 30, 50, 75, 100, 125, 150, 170];
 
-tic;
 rs = zeros(size(ks));
 
+% Running face recognition on ORL dataset
+tic;
 for k = 1:numel(ks)
     rs(1, k) = myFaceRecognition(X, Y, 1, ks(1, k), 5, 5);
 end
@@ -30,24 +31,18 @@ grid on;
 grid minor;
 
 %% Yale Face Dataset
-
 image_dir = uigetdir();
 ks = [1, 2, 3, 5, 10, 20, 30, 50, 60, 65, 75, 100, 200, 300, 500, 1000];
 
-tic;
-% Setting up the second training imageset
+% Setting up the Yale training imageset
 [X, Y, dpu, tpu] = getSet2Images(image_dir);
-toc;
 
 rs = zeros(size(ks));
 
 tic;
 wb = waitbar(0, 'Yale Dataset Face Recognition');
 for k = 1:numel(ks)
-    tic;
     rs(1, k) = myFaceRecognition(X, Y, 4, ks(1, k), dpu, tpu);
-    display(rs(1, k));
-    toc;
     waitbar(k/numel(ks))
 end
 toc;
