@@ -57,4 +57,17 @@ for i=1:25
 end
 
 %% Observation
-% Nishant karega ye
+% Observing the reconstructed face of the person shows that only a small
+% number of k are enough to reconstruct the image and hence we can only use
+% a small number of k to do it. The quality of reconstruction is bad
+% initially and quickly becomes good. And after a certain k, the change in 
+% quality of reconstruction becomes non-visible. This is also proven by the 
+% data we see in the previous question which shows the recognition rate 
+% becomes steady post a certain k
+%
+% The eigen faces are a unique thing about this algorithm which is that the 
+% visualisations of the eigen vectors resembles an amalgamation of the
+% images of the dataset. Also as the eigen value decreases we see a more
+% noisy and eigen face with more artifacts. This is also visible in the
+% fourier domain which shows a higher spread in the frequencies and hence
+% indicating less of a significance towards a particular formation
