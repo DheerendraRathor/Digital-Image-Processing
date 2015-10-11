@@ -1,19 +1,26 @@
-function [X, Y] = getSet2Images(image_dir)
+function [X, Y, Xsize, Ysize] = getSet2Images(image_dir)
     X = [];
     Y = [];
     
     folders = dir(image_dir);
     % Looping over the folders, (first 2 are . ..)
     wb = waitbar(0, 'Compiling Images');
-    for folder = 3:size(folders, 1)        
+    for folder = 1:size(folders, 1) 
+        if regexp(folders(folder, 1).name, '^\.')
+            continue
+        end
+        
         % Creating the folder name
         folder_name = strcat(image_dir, '/', folders(folder, 1).name);
         
         % Getting the files in that folder
         files = dir(folder_name);
-        
+        file_count = 0;
         % Iterating over the first 30 files, (first 2 are . ..)
-        for file = 3:size(files, 1)
+        for file = 1:size(files, 1)
+           if regexp(files(file, 1).name, '^\.')
+                continue
+           end
             % Creating the name of the file
             image_filename = strcat(folder_name, '/', files(file, 1).name);
             
@@ -27,13 +34,13 @@ function [X, Y] = getSet2Images(image_dir)
             % reading step is the rate limiting step and even using the
             % standard way doesnt speed up anything. So, using this as this
             % is cleaner and easier to understand
-            if file <= 32
+            if file_count < 30
                 X = [X image_col];
-            else
+            elseif file_count < 60
                 Y = [Y image_col];
             end
-            
-            waitbar(((folder-3)*60 + file - 2)/(38*60));
+            file_count = file_count + 1;
+            waitbar((folder*size(files, 1) + file)/(size(files, 1)*size(folders, 1)));
         end
     end
     
@@ -42,7 +49,6 @@ function [X, Y] = getSet2Images(image_dir)
     % Converting image from  uint to double for later calculations
     X = double(X); 
     Y = double(Y);
-    
-    size(X)
-    size(Y)
+    Xsize = 30;
+    Ysize = 30;
 end

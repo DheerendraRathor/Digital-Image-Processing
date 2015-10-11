@@ -15,8 +15,4 @@ function [U, S, V] = mySVD(X)
    end
    
    S = U' * X * V;
-   
-   display(U);
-   display(V);
-   display(S);
 end

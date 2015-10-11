@@ -7,7 +7,6 @@ function R = myFaceRecognition(X, Y, kmin, k, dpu, tpu)
     % tpu - testign data images per user
 
     %% Training Phase
-    display('Starting');
     
     % Using the faster mode of PCA, computing the C
     C = X' * X;

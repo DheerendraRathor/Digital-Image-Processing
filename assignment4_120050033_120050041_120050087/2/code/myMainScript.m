@@ -36,7 +36,7 @@ ks = [1, 2, 3, 5, 10, 20, 30, 50, 60, 65, 75, 100, 200, 300, 500, 1000];
 
 tic;
 % Setting up the second training imageset
-[X, Y] = getSet2Images(image_dir);
+[X, Y, dpu, tpu] = getSet2Images(image_dir);
 toc;
 
 rs = zeros(size(ks));
@@ -45,7 +45,8 @@ tic;
 wb = waitbar(0, 'Yale Dataset Face Recognition');
 for k = 1:numel(ks)
     tic;
-    rs(1, k) = myFaceRecognition(X, Y, 1, ks(1, k), 5, 5);
+    rs(1, k) = myFaceRecognition(X, Y, 4, ks(1, k), dpu, tpu);
+    display(rs(1, k));
     toc;
     waitbar(k/numel(ks))
 end
