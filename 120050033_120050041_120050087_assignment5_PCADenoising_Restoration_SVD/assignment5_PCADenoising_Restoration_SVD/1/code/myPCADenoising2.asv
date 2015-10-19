@@ -1,0 +1,67 @@
+function denoised_image= myPCADenoising2(image, patch_size, neighbourhood, k, sigma)
+    [padded_image, rmin, rmax, cmin, cmax] = myPaddedImage(image, neighbourhood + patch_size);
+    patch_size_half = floor(patch_size(1,1)/2);
+    patch_points = patch_size(1,1)*patch_size(1,2);
+    
+    padded_denoised_image = zeros(size(padded_image, 1), size(padded_image, 2));
+    count = zeros(size(padded_image, 1), size(padded_image, 2));
+    
+    for row = rmin:rmax
+        for column = cmin:cmax
+            image_patch = myGetExactWindow(padded_image, [row, column], patch_size);
+            row_top_left = row - patch_size_half;
+            column_top_left = column - patch_size_half;
+            window_half = floor(neighbourhood(1,1)/2);
+            
+            brrange = row_top_left - window_half:row_top_left + window_half;
+            bcrange = column_top_left - window_half:column_top_left + window_half;
+            patches = zeros(window_half*window_half, patch_points);
+            
+            position = 1;
+            for bro = brrange
+                for bcol = bcrange
+                    image_sub_patch = myGetExactWindow(padded_image, [bro, bcol], patch_size);
+                    image_sub_patch = reshape(image_sub_patch, 1, patch_points);
+                    patches(position, :) = image_sub_patch;
+                    position = position + 1;
+                end
+            end
+            size(patches)
+            
+            image_patch = reshape(image_patch, 1, numel(image_patch));
+            nearests = knnsearch(patches, image_patch, 'k', k);
+            size(P)
+            
+            P = zeros(patch_points, k);
+            for nearest = 1:k
+                P(:,nearest) = patches(nearests(1, nearest)
+            end
+            clear 'patches';
+            
+            C = P * P';
+            [Evec, Eval] = eig(C);
+            clear 'C';
+            
+            Vn = Evec;
+            A = Vn'*P;
+            A2 = A.*A;
+            A_Bar = sum(A2, 2)./numel(image) - sigma*sigma;
+            Wiener = 1 + sigma*sigma/A_Bar;
+            clear 'A_Bar';
+            
+            B = zeros(size(A,1) ,size(A,2));
+            for i = 1:size(A,2)
+               B(:, i) = Wiener' .* A(:, i);
+            end
+            
+            denoised_patches = Vn*B;
+            row_range = row-patch_size_half:row+patch_size_half;
+            col_range = column-patch_size_half:column+patch_size_half;
+            padded_denoised_image(row_range, col_range) = padded_denoised_image(row_range, col_range) ...
+                + reshape(denoised_patches(:, 1), patch_size(1,1), patch_size(1,2));
+            
+            count(row_range, col_range) = count(row_range, col_range) + 1.0;
+        end
+    end
+    denoised_image = padded_denoised_image(rmin:rmax, cmin:cmax) ./ count(rmin:rmax, cmin:cmax);
+end
