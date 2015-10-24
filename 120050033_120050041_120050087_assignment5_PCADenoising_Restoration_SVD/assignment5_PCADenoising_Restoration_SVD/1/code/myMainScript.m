@@ -28,7 +28,7 @@ images(:, :, 3) = denoised_image;
 
 myShowImages(images, 'Simple PCA Denoised Barbara');
 
-fprintf('Time taken: %d\n', elapsed_time);
+fprintf('Time taken: %.3f\n', elapsed_time);
 rmsd_of_denoised_image = myRMSDofImage(image, denoised_image);
 fprintf('RMSD of Simple PCA denoised Image is: %.6f\n',...
     rmsd_of_denoised_image);
@@ -50,7 +50,7 @@ images(:, :, 3) = denoised_image;
 
 myShowImages(images, 'Better PCA Denoised Barbara');
 
-fprintf('Time taken: %d\n', elapsed_time);
+fprintf('Time taken: %.3f\n', elapsed_time);
 rmsd_of_denoised_image = myRMSDofImage(image, denoised_image);
 fprintf('RMSD of Better PCA denoised Image is: %.6f\n',...
     rmsd_of_denoised_image);
@@ -71,7 +71,24 @@ images(:, :, 3) = denoised_image;
 
 myShowImages(images, 'Bilateral filtering smoothened barbara');
 
-fprintf('Time taken: %d\n', elapsed_time);
+fprintf('Time taken: %.3f\n', elapsed_time);
 rmsd_of_denoised_image = myRMSDofImage(image, denoised_image);
 fprintf('RMSD of bilateral filtered smoothened Image is: %.6f\n',...
     rmsd_of_denoised_image);
+
+%% Observations
+%
+% * In PCA based denoising, edges are intact while in bilateral filtering
+% edges have been smoothened
+% * PCA based denoised images looks more closer to original image than
+% bilateral filtered images. This is confirmed by RMSD values as well
+
+%% Difference In PCA based denoising and bilateral filtering
+%
+% * While PCA based denoising tries to reconstruct image on the basis of
+% noise type, origin and mathematical modelling of noise, bilateral filter
+% just average out pixel values. Different noise types will require
+% different PCAs but bilateral filter can be applied on any image
+% * PCA based denoising are automatic and they don't require any manual
+% tuning unlike bilateral filtering where manual tuning is required to get
+% best result
