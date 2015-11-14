@@ -1,0 +1,39 @@
+function R = runFisherFaceFR(X, Y, training_per_user, test_per_user, classes)
+    %% Function Doc
+    
+    % X - training dataset
+    % Y - testing dataset
+    % training_per_user - training data images per user
+    % test_per_user - testign data images per user
+    % classes - the number of users (classes in recognition)
+
+    %% Training Phase
+    
+    pca_mat_file = '../dataset/CachedYale/yale_fisher_pca.mat';
+    Vpca = cachedPca(X, 1, training_per_user*classes - classes, pca_mat_file);  
+    
+    
+    % Projected training set
+    Xp = Vn*(Vn\X);
+      
+    %% Testing Phase
+    
+    % Projected test set
+    yp = Vn*(Vn\X);
+        
+    % Sets the number of test images
+    num_test_images = size(Y, 2);
+    
+    % Find the closest dataset point for each point in the testset
+    closest_indices = knnsearch(Xp', Yp');
+    
+    % Iterating over the closest indices to find recognition rate
+    predicted_users = idivide(int32(closest_indices' - 1), int32(training_per_user), 'floor') + 1;
+    actual_users = idivide(int32([1:num_test_images] -1), int32(test_per_user), 'floor') + 1;
+    differences = predicted_users - actual_users;
+    correct_count = sum(differences(:)==0);
+    
+    % Recognition Rate
+    R = correct_count / num_test_images;
+    
+end

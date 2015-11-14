@@ -1,6 +1,6 @@
 %% Mini Face Recognition Algorithm
 
-%% Initial Setup 
+%% Initial Setup
 addpath('../../common')
 
 %% ORL Dataset
