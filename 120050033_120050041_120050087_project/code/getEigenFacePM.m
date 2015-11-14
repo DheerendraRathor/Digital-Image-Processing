@@ -17,7 +17,8 @@ function W = getEigenFacePM(X, kmin, k)
      end
     
     % Normalizing these eigen vectors
-     W = getPca(X, kmin, k);
+     W = pca(X', 'NumComponents', kmin + k - 1);
+     W = W(:, kmin: kmin + k - 1);
 
      save(mat_file, 'W');
 end

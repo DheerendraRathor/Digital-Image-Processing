@@ -17,8 +17,8 @@ function W = getFisherFacePM(X, n, c, t)
     
     %% Computation
     % Fetch the W_pca
-    Wpca = getPca(X, 1, n - c);
-           
+    Wpca = pca(X', 'NumComponents', n - c);
+    
     Xpca = Wpca' * X;
     % Necessary dimensionality reduction for Sb, Sc calculation
     reduced_dimenionality = size(Xpca, 1);

@@ -1,6 +1,6 @@
 %% Loading the Yale Dataset
-training_size_per_user = 45;
-test_size_per_user = 15;
+training_size_per_user = 30;
+test_size_per_user = 30;
 
 tic;
     [X, Y, C] = getYaleImages(training_size_per_user, test_size_per_user);
