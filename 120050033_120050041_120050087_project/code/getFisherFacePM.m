@@ -1,4 +1,4 @@
-function W = getFisherFacePM(X, n, c, t)
+function W = getFisherFacePM(X, n, c, t, folder)
     %% Get Fisher Face Projection Matrix
     % Returns the fisher face based face recognition weight matrix
     
@@ -9,7 +9,7 @@ function W = getFisherFacePM(X, n, c, t)
 
     %% Training Phase
     
-    mat_file = '../dataset/CachedYale/fisher_pm.mat';
+    mat_file = strcat(folder, 'fisher_pm.mat');
     if exist(mat_file, 'file')
         load(mat_file, 'W');
         return

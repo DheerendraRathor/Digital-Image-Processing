@@ -59,6 +59,6 @@ ylabel('% errors');
 % * We implemented a caching policy which reduces running time from
 % approximately 5.5 minutes to ~11 seconds by storing precomputed results
 % and datasets
-% * Handled pca to prevent low condition number and related singularity issues.
-%
-% _May the Cache be With You!_
+% * Han built-in pca to prevent low condition number and related
+% singularity issues.
+% **May the Cache be With You!**

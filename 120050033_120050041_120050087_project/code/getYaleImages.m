@@ -72,5 +72,4 @@ function [X, Y, C] = getYaleImages(Xsize, Ysize)
     C = classes;
     
     save(mat_file, 'X', 'Y', 'C');
-%     display('[Progress] Yale dataset load completed');
 end
